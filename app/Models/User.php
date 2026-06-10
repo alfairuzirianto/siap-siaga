@@ -61,6 +61,30 @@ class User extends Authenticatable
         self::ROLE_SUPERVISOR,
     ];
 
+    public function hasRole(string ...$roles): bool
+    {
+        if (! $this->role) {
+            return false;
+        }
+
+        return in_array($this->role, $roles, strict: true);
+    }
+
+    public function isAdmin()
+    {
+        return $this->hasRole(self::ROLE_ADMIN);
+    }
+
+    public function isPetugas()
+    {
+        return $this->hasRole(self::ROLE_PETUGAS);
+    }
+
+    public function isSupervisor()
+    {
+        return $this->hasRole(self::ROLE_SUPERVISOR);
+    }
+
     public function createdPeralatan()
     {
         return $this->hasMany(Peralatan::class, 'created_by');
