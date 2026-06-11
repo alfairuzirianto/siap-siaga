@@ -3,9 +3,10 @@
 use App\Livewire\Forms\LoginForm;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.guest')] class extends Component
+new #[Layout('layouts.guest')] #[Title('Masuk — SIAGA PLN')] class extends Component
 {
     public LoginForm $form;
 
@@ -25,47 +26,78 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <!-- Session Status -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold text-slate-900 font-display">Selamat datang</h2>
+        <p class="text-sm text-muted mt-1">Masuk ke akun SIAGA PLN Anda</p>
+    </div>
+
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form wire:submit="login">
-        <!-- Email Address -->
+    <form wire:submit="login" class="space-y-5">
+        <!-- Input Username -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
+            <label for="username" class="form-label">Username</label>
+            <input id="username"
+                   type="text"
+                   wire:model="form.username"
+                   value="{{ old('username') }}"
+                   class="form-input @error('form.username') border-red-400 focus:ring-red-500 @enderror"
+                   placeholder="Masukkan username Anda"
+                   required autofocus autocomplete="username">
+            @error('username')
+            <p class="form-error">{{ $message }}</p>
+            @enderror
+        </div>
+        <!-- Input Password -->
+        <div>
+            <div class="flex items-center justify-between mb-1">
+                <label for="password" class="form-label mb-0">Password</label>
+                @if(Route::has('password.request'))
+                <a href="{{ route('password.request') }}"
+                   class="text-xs text-primary-600 hover:text-primary-700 transition-colors">
+                    Lupa password?
+                </a>
+                @endif
+            </div>
+            <div class="relative" x-data="{ show: false }">
+                <input id="password"
+                       :type="show ? 'text' : 'password'"
+                       wire:model="form.password"
+                       class="form-input pr-10 @error('form.password') border-red-400 focus:ring-red-500 @enderror"
+                       placeholder="••••••••"
+                   required autocomplete="current-password">
+                <button type="button"
+                        @click="show = !show"
+                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-slate-600">
+                    <i :class="show ? 'ti ti-eye-off' : 'ti ti-eye'" class="text-base"></i>
+                </button>
+            </div>
+            @error('password')
+            <p class="form-error">{{ $message }}</p>
+            @enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember" class="inline-flex items-center">
-                <input wire:model="form.remember" id="remember" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+        <!-- Ingat Saya -->
+        <div class="flex items-center gap-2">
+            <input id="remember_me"
+                   type="checkbox"
+                   name="remember"
+                   class="w-4 h-4 rounded border-slate-300 text-primary-600
+                          focus:ring-primary-500 cursor-pointer">
+            <label for="remember_me" class="text-sm text-slate-600 cursor-pointer select-none">
+                Ingat saya
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}" wire:navigate>
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
+        <!-- Tombol Masuk -->
+        <button type="submit" class="btn-primary w-full justify-center py-2.5 mt-2">
+            <i class="ti ti-login"></i>
+            Masuk
+        </button>
     </form>
+
+    {{-- Copyright --}}
+    <p class="mt-8 text-center text-xs text-slate-400">
+        © {{ date('Y') }} PT PLN (Persero) · Internal use only
+    </p>
 </div>
