@@ -13,7 +13,7 @@ class PeminjamanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PENGGUNA);
     }
 
     /**
@@ -21,7 +21,9 @@ class PeminjamanPolicy
      */
     public function view(User $user, Peminjaman $peminjaman): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return ($user->hasRole(User::ROLE_PENGGUNA)
+            && $user->id === $peminjaman->peminjam->id)
+            || $user->isAdmin();
     }
 
     /**
@@ -29,22 +31,6 @@ class PeminjamanPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Peminjaman $peminjaman): bool
-    {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Peminjaman $peminjaman): bool
-    {
-        return $user->isAdmin();
+        return $user->isPengguna();
     }
 }

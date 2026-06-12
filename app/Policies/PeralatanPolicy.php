@@ -13,7 +13,7 @@ class PeralatanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return $user->isAdmin();
     }
 
     /**
@@ -21,7 +21,7 @@ class PeralatanPolicy
      */
     public function view(User $user, Peralatan $peralatan): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return $user->isAdmin();
     }
 
     /**
@@ -29,7 +29,7 @@ class PeralatanPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return $user->isAdmin();
     }
 
     /**
@@ -37,7 +37,7 @@ class PeralatanPolicy
      */
     public function update(User $user, Peralatan $peralatan): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return $user->isAdmin();
     }
 
     /**

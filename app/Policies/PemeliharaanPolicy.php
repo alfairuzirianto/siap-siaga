@@ -13,7 +13,7 @@ class PemeliharaanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return $user->isAdmin();
     }
 
     /**
@@ -21,7 +21,7 @@ class PemeliharaanPolicy
      */
     public function view(User $user, Pemeliharaan $pemeliharaan): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return $user->isAdmin();
     }
 
     /**
@@ -29,7 +29,7 @@ class PemeliharaanPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return $user->isAdmin();
     }
 
     /**
@@ -37,7 +37,7 @@ class PemeliharaanPolicy
      */
     public function update(User $user, Pemeliharaan $pemeliharaan): bool
     {
-        return $user->hasRole(User::ROLE_ADMIN, User::ROLE_PETUGAS);
+        return $user->isAdmin();
     }
 
     /**

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('peminjaman_id')->constrained('peminjaman')->cascadeOnDelete();
             $table->string('nomor_ba')->unique();
             $table->string('jenis_ba');
-            $table->string('file');
             $table->uuid('token')->unique();
             $table->boolean('is_valid')->default(true);
             $table->timestamps();

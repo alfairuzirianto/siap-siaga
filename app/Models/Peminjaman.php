@@ -9,50 +9,50 @@ class Peminjaman extends Model
     protected $table = 'peminjaman';
 
     public const STATUS_DIAJUKAN = 'Diajukan';
+    public const STATUS_DIBATALKAN = 'Dibatalkan';
     public const STATUS_DISETUJUI = 'Disetujui';
     public const STATUS_DIPINJAM = 'Dipinjam';
     public const STATUS_DITOLAK = 'Ditolak';
-    public const STATUS_SELESAI = 'Selesai';
+    public const STATUS_DIKEMBALIKAN = 'Dikembalikan';
 
     public const STATUS_PEMINJAMAN = [
         self::STATUS_DIAJUKAN,
+        self::STATUS_DIBATALKAN,
         self::STATUS_DISETUJUI,
         self::STATUS_DIPINJAM,
         self::STATUS_DITOLAK,
-        self::STATUS_SELESAI,
+        self::STATUS_DIKEMBALIKAN,
     ];
     
     protected $fillable = [
         'nomor_peminjaman',
-        'peminjam',
-        'penyedia',
-        'tujuan',
-        'dari_tanggal',
-        'sampai_tanggal',
+        'pengguna_id',
+        'tujuan_keperluan',
+        'tgl_rencana_pinjam',
+        'tgl_rencana_kembali',
         'status',
-        'tanggal_kembali',
-        'created_by',
-        'updated_by',
+        'tgl_realisasi_kembali',
+        'approver_id',
+        'keterangan_pinjam',
+        'keterangan_kembali',
     ];
 
     protected $casts = [
-        'peminjam' => 'array',
-        'penyedia' => 'array',
-        'dari_tanggal' => 'date',
-        'sampai_tanggal' => 'date',
-        'tanggal_kembali' => 'date',
+        'tgl_rencana_pinjam' => 'date',
+        'tgl_rencana_kembali' => 'date',
+        'tgl_realisasi_kembali' => 'date',
     ];
 
-    public function creator()
+    public function pengguna()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'pengguna_id');
     }
 
-    public function updater()
+    public function approver()
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'approver_id');
     }
-    
+
     public function details()
     {
         return $this->hasMany(PeminjamanDetail::class, 'peminjaman_id');
@@ -61,10 +61,5 @@ class Peminjaman extends Model
     public function beritaAcara()
     {
         return $this->hasMany(BeritaAcara::class, 'peminjaman_id');
-    }
-
-    public function approvals()
-    {
-        return $this->hasMany(Approval::class, 'peminjaman_id');
     }
 }

@@ -20,7 +20,6 @@ class BeritaAcara extends Model
         'peminjaman_id',
         'nomor_ba',
         'jenis_ba',
-        'file',
         'token',
         'is_valid',
     ];

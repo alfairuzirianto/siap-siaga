@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_peminjaman')->unique();
-            $table->json('peminjam');
-            $table->json('penyedia');
-            $table->string('tujuan');
-            $table->date('dari_tanggal');
-            $table->date('sampai_tanggal');
+            $table->foreignId('pengguna_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('tujuan_keperluan');
+            $table->date('tgl_rencana_pinjam');
+            $table->date('tgl_rencana_kembali');
             $table->string('status');
-            $table->date('tanggal_kembali')->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->date('tgl_realisasi_kembali')->nullable();
+            $table->foreignId('approver_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('keterangan_pinjam')->nullable();
+            $table->string('keterangan_kembali')->nullable();
             $table->timestamps();
         });
 
@@ -30,6 +30,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('peminjaman_id')->constrained('peminjaman')->cascadeOnDelete();
             $table->foreignId('peralatan_id')->constrained('peralatan')->cascadeOnDelete();
+            $table->unique(['peminjaman_id', 'peralatan_id']);
             $table->timestamps();
         });
     }

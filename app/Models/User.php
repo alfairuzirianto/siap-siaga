@@ -20,6 +20,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'nama_lengkap',
+        'nip',
+        'jabatan',
+        'unit',
         'username',
         'role',
         'is_active',
@@ -52,12 +55,12 @@ class User extends Authenticatable
     }
 
     public const ROLE_ADMIN = 'Admin';
-    public const ROLE_PETUGAS = 'Petugas';
+    public const ROLE_PENGGUNA = 'Pengguna';
     public const ROLE_SUPERVISOR = 'Supervisor';
 
     public const ROLES = [
         self::ROLE_ADMIN,
-        self::ROLE_PETUGAS,
+        self::ROLE_PENGGUNA,
         self::ROLE_SUPERVISOR,
     ];
 
@@ -70,17 +73,17 @@ class User extends Authenticatable
         return in_array($this->role, $roles, strict: true);
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->hasRole(self::ROLE_ADMIN);
     }
 
-    public function isPetugas()
+    public function isPengguna(): bool
     {
-        return $this->hasRole(self::ROLE_PETUGAS);
+        return $this->hasRole(self::ROLE_PENGGUNA);
     }
 
-    public function isSupervisor()
+    public function isSupervisor(): bool
     {
         return $this->hasRole(self::ROLE_SUPERVISOR);
     }
@@ -95,14 +98,14 @@ class User extends Authenticatable
         return $this->hasMany(Peralatan::class, 'updated_by');
     }
 
-    public function createdPeminjaman()
+    public function pinjam()
     {
-        return $this->hasMany(Peminjaman::class, 'created_by');
+        return $this->hasMany(Peminjaman::class, 'pengguna_id');
     }
 
-    public function updatedPeminjaman()
+    public function validasi()
     {
-        return $this->hasMany(Peminjaman::class, 'updated_by');
+        return $this->hasMany(Peminjaman::class, 'approver_id');
     }
 
     public function createdPemeliharaan()
@@ -113,11 +116,6 @@ class User extends Authenticatable
     public function updatedPemeliharaan()
     {
         return $this->hasMany(Pemeliharaan::class, 'updated_by');
-    }
-
-    public function approvals()
-    {
-        return $this->hasMany(Approval::class, 'approver_id');
     }
 
     public function activityLogs()
