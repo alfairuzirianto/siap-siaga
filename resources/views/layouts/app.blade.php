@@ -125,7 +125,7 @@
                     <p class="text-white/40 text-[10px] truncate">{{ auth()->user()->role }}</p>
                 </div>
                 <a x-show="!desktopCollapsed || mobileOpen"
-                   href="{{ route('profile.edit') }}"
+                   href="{{ route('profile') }}" wire:navigate
                    class="text-white/40 hover:text-white transition-colors shrink-0"
                    title="Profil">
                     <i class="ti ti-settings text-base"></i>
@@ -154,8 +154,9 @@
             {{-- Toggle desktop sidebar --}}
             <button @click="desktopCollapsed = !desktopCollapsed"
                     class="hidden md:flex btn-ghost p-2 -ml-2 rounded-lg"
-                    aria-label="Toggle sidebar">
-                <i class="ti ti-layout-sidebar text-xl text-slate-600"></i>
+                    :aria-label="desktopCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
+                <i class="ti text-xl text-slate-600"
+                   :class="desktopCollapsed ? 'ti-layout-sidebar-left-expand' : 'ti-layout-sidebar-left-collapse'"></i>
             </button>
 
             <div class="flex-1 min-w-0"></div>
@@ -184,19 +185,12 @@
                             <p class="text-sm font-medium text-slate-900 truncate">{{ auth()->user()->nama_lengkap }}</p>
                             <p class="text-xs text-slate-500 truncate">{{ auth()->user()->email }}</p>
                         </div>
-                        <a href="{{ route('profile.edit') }}" wire:navigate
+                        <a href="{{ route('profile') }}" wire:navigate
                            class="flex items-center gap-2 px-3 py-2 text-sm text-slate-700
                                    hover:bg-slate-50 transition-colors">
                             <i class="ti ti-user text-slate-400"></i> Profil Saya
                         </a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit"
-                                    class="w-full flex items-center gap-2 px-3 py-2 text-sm
-                                        text-red-600 hover:bg-red-50 transition-colors">
-                                <i class="ti ti-logout text-red-400"></i> Keluar
-                            </button>
-                        </form>
+                        <livewire:auth.logout />
                     </div>
                 </div>
             </div>
@@ -317,7 +311,7 @@
         </a>
         @endif
 
-        <a href="{{ route('profile.edit') }}" wire:navigate
+        <a href="{{ route('profile') }}" wire:navigate
            class="flex flex-col items-center gap-1.5 p-3 rounded-xl hover:bg-slate-50">
             <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
                 <i class="ti ti-user text-slate-600 text-xl"></i>

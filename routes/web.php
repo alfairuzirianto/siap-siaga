@@ -11,12 +11,6 @@ Route::get('/', fn () => redirect()->route('dashboard'));
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
-    
-    Route::prefix('profile')->name('profile.')->group(function() {
-        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
-        Route::patch('/', [ProfileController::class, 'update'])->name('update');
-        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
-    });
 
     Route::middleware(['role:Admin'])->group(function () {
         Route::prefix('peralatan')->name('peralatan.')->group(function () {

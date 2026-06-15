@@ -93,7 +93,7 @@
                     <div class="min-w-0">
                         <span class="text-[11px] text-slate-400 font-medium block uppercase tracking-wider">Dibuat Oleh</span>
                         <span class="text-sm font-semibold text-slate-700 truncate block">{{ $peralatan->creator?->nama_lengkap ?? '—' }}</span>
-                        <span class="text-[11px] text-slate-400 block mt-0.5">{{ $peralatan->created_at?->format('d M Y, H:i') }} WIB</span>
+                        <span class="text-[11px] text-slate-400 block mt-0.5">{{ formatTanggal($peralatan->created_at, 'd M Y, H:i') . " WIB" }}</span>
                     </div>
                 </div>
                 <div class="card bg-white rounded-xl border border-slate-200/80 p-4 flex items-center gap-3.5 shadow-sm">
@@ -104,7 +104,7 @@
                         <span class="text-[11px] text-slate-400 font-medium block uppercase tracking-wider">Terakhir Diperbarui</span>
                         <span class="text-sm font-semibold text-slate-700 truncate block">{{ $peralatan->updater?->nama_lengkap ?? '—' }}</span>
                         <span class="text-[11px] text-slate-400 block mt-0.5">
-                            {{ ($peralatan->updated_at != $peralatan->created_at) ? $peralatan->updated_at->format('d M Y, H:i') . ' WIB' : '—' }}
+                            {{ ($peralatan->updated_at != $peralatan->created_at) ? formatTanggal($peralatan->created_at, 'd M Y, H:i') . " WIB" : '—' }}
                         </span>
                     </div>
                 </div>
@@ -152,7 +152,7 @@
                                         <tr class="hover:bg-slate-50/50 transition-colors">
                                             <td class="py-3.5 px-6 whitespace-nowrap">
                                                 <span class="font-semibold text-slate-800 block">{{ $maint->nomor_pemeliharaan }}</span>
-                                                <span class="text-xs text-slate-400">{{ $maint->tanggal_pemeliharaan?->format('d M Y') }}</span>
+                                                <span class="text-xs text-slate-400">{{ formatTanggal($maint->tanggal_pemeliharaan, 'd M Y') }}</span>
                                             </td>
                                             <td class="py-3.5 px-4 text-slate-600 font-medium whitespace-nowrap">
                                                 {{ $maint->nama_petugas }}
@@ -211,10 +211,11 @@
                                             </td>
                                             <td class="py-3.5 px-4 text-slate-600 text-xs whitespace-nowrap">
                                                 <div class="font-medium text-slate-700">
-                                                    {{ $pinjam->tgl_rencana_pinjam?->format('d M Y') }}
+                                                    {{ formatTanggal($pinjam->tgl_rencana_pinjam, 'd M Y') }}
                                                 </div>
                                                 <div class="text-slate-400 mt-0.5">
-                                                    s/d {{ $pinjam->tgl_rencana_kembali?->format('d M Y') }}
+                                                    s/d {{ formatTanggal($pinjam->tgl_rencana_kembali, 'd M Y') }}
+
                                                 </div>
                                             </td>
                                             <td class="py-3.5 px-4 whitespace-nowrap">
@@ -224,7 +225,8 @@
                                                 @if($pinjam->tgl_realisasi_kembali)
                                                     <span class="text-green-600 flex items-center gap-1">
                                                         <i class="ti ti-calendar-check text-base"></i>
-                                                        {{ $pinjam->tgl_realisasi_kembali->format('d M Y') }}
+                                                            {{ formatTanggal($pinjam->tgl_realisasi_kembali, 'd M Y') }}
+
                                                     </span>
                                                 @else
                                                     <span class="text-slate-400 italic text-xs">Belum dikembalikan</span>
