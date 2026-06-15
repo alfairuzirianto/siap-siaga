@@ -77,7 +77,7 @@
                 @endif
                     
                 @can('viewAny', App\Models\Peralatan::class)
-                <x-sidebar-item route="dashboard" icon="ti-box" label="Peralatan" />
+                <x-sidebar-item route="peralatan.index" icon="ti-box" label="Peralatan" />
                 @endcan
 
                 @can('viewAny', App\Models\Peminjaman::class)
@@ -254,8 +254,8 @@
         </a>
 
         @if(auth()->user()->isAdmin())
-        <a href="" wire:navigate
-           class="{{ request()->routeIs('equipment.*') ? 'bottom-nav-item-active' : 'bottom-nav-item' }}">
+        <a href="{{ route('peralatan.index') }}" wire:navigate
+           class="{{ request()->routeIs('peralatan.*') ? 'bottom-nav-item-active' : 'bottom-nav-item' }}">
             <i class="ti ti-box"></i>
             <span>Peralatan</span>
         </a>
