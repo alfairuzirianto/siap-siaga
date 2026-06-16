@@ -8,6 +8,10 @@ use App\Livewire\Peralatan\Show as PeralatanShow;
 use App\Livewire\Pemeliharaan\Index as PemeliharaanIndex;
 use App\Livewire\Pemeliharaan\Form as PemeliharaanForm;
 use App\Livewire\Pemeliharaan\Show as PemeliharaanShow;
+use App\Livewire\User\Index as UserIndex;
+use App\Livewire\User\Form as UserForm;
+use App\Livewire\ActivityLog\Index as ActivityLogIndex;
+use App\Livewire\ActivityLog\Show as ActivityLogShow;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('dashboard'));
@@ -29,6 +33,18 @@ Route::middleware(['auth'])->group(function () {
             Route::get('{pemeliharaan}/edit', PemeliharaanForm::class)->name('edit');
             Route::get('{pemeliharaan}', PemeliharaanShow::class)->name('show');
         });
+
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/', UserIndex::class)->name('index');
+            Route::get('create', UserForm::class)->name('create');
+            Route::get('{user}/edit', UserForm::class)->name('edit');
+        });
+
+        Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
+            Route::get('/', ActivityLogIndex::class)->name('index');
+            Route::get('{activityLog}', ActivityLogShow::class)->name('show');
+        });
+
     });
 });
 

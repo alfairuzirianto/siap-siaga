@@ -104,8 +104,8 @@
             {{-- Administrasi --}}
             @if(auth()->user()->isAdmin())
             <x-sidebar-group label="Administrasi">
-                <x-sidebar-item route="dashboard" icon="ti-users" label="Kelola User" />
-                <x-sidebar-item route="dashboard" icon="ti-history" label="Log Aktivitas" />
+                <x-sidebar-item route="users.index" icon="ti-users" label="Kelola Pengguna" />
+                <x-sidebar-item route="activity-logs.index" icon="ti-history" label="Log Aktivitas" />
             </x-sidebar-group>
             @endif
 
@@ -302,12 +302,12 @@
         </a>
 
         @if(auth()->user()->isAdmin())
-        <a href="{{ route('dashboard') }}" wire:navigate
+        <a href="{{ route('users.index') }}" wire:navigate
            class="flex flex-col items-center gap-1.5 p-3 rounded-xl hover:bg-slate-50">
             <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
                 <i class="ti ti-users text-purple-600 text-xl"></i>
             </div>
-            <span class="text-[10px] text-slate-600 font-medium">Kelola User</span>
+            <span class="text-[10px] text-slate-600 font-medium">Kelola Pengguna</span>
         </a>
         @endif
 
