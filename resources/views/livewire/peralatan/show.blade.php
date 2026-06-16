@@ -104,7 +104,7 @@
                         <span class="text-[11px] text-slate-400 font-medium block uppercase tracking-wider">Terakhir Diperbarui</span>
                         <span class="text-sm font-semibold text-slate-700 truncate block">{{ $peralatan->updater?->nama_lengkap ?? '—' }}</span>
                         <span class="text-[11px] text-slate-400 block mt-0.5">
-                            {{ ($peralatan->updated_at != $peralatan->created_at) ? formatTanggal($peralatan->created_at, 'd M Y, H:i') . " WIB" : '—' }}
+                            {{ ($peralatan->updated_at != $peralatan->created_at) ? formatTanggal($peralatan->updated_at, 'd M Y, H:i') . " WIB" : '—' }}
                         </span>
                     </div>
                 </div>

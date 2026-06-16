@@ -48,6 +48,7 @@
                         <div class="relative">
                             <select wire:model="peralatan_jenis_id" 
                                     class="form-input w-full rounded-xl border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 appearance-none focus:border-primary-500 focus:ring-primary-500 transition-all pr-10">
+                                <option value="">-- Pilih Jenis Peralatan --</option>
                                 @foreach($jenis as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama_jenis }}</option>
                                 @endforeach

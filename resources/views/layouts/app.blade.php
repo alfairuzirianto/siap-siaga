@@ -88,7 +88,7 @@
             {{-- Operasional --}}
             @can('viewAny', App\Models\Pemeliharaan::class)
             <x-sidebar-group label="Operasional">
-                <x-sidebar-item route="dashboard" icon="ti-tool"            label="Maintenance" />
+                <x-sidebar-item route="pemeliharaan.index" icon="ti-tool"            label="Maintenance" />
             </x-sidebar-group>
             @endcan
 
@@ -293,7 +293,7 @@
         class="md:hidden fixed bottom-[60px] left-0 right-0 z-20 bg-white
                 border-t border-slate-200 rounded-t-2xl shadow-xl p-4 grid grid-cols-4 gap-3">
 
-        <a href="{{ route('dashboard') }}" wire:navigate
+        <a href="{{ route('pemeliharaan.index') }}" wire:navigate
            class="flex flex-col items-center gap-1.5 p-3 rounded-xl hover:bg-slate-50">
             <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
                 <i class="ti ti-tool text-orange-600 text-xl"></i>
