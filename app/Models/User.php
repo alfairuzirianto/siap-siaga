@@ -103,9 +103,14 @@ class User extends Authenticatable
         return $this->hasMany(Peminjaman::class, 'pengguna_id');
     }
 
-    public function validasi()
+    public function validasiPinjam()
     {
-        return $this->hasMany(Peminjaman::class, 'approver_id');
+        return $this->hasMany(Peminjaman::class, 'approver_pinjam');
+    }
+
+    public function validasiKembali()
+    {
+        return $this->hasMany(Peminjaman::class, 'approver_kembali');
     }
 
     public function createdPemeliharaan()

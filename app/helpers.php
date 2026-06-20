@@ -31,8 +31,8 @@ function nomorBA(string $jenis): string
         ->count();
 
     $kodeJenis = match($jenis) {
-        'borrow' => 'PPB',
-        'return' => 'PBB',
+        BeritaAcara::BA_PEMINJAMAN => 'PPB',
+        BeritaAcara::BA_PENGEMBALIAN => 'PBB',
         default  => 'PPB',
     };
 

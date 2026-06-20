@@ -8,20 +8,26 @@ class Peminjaman extends Model
 {
     protected $table = 'peminjaman';
 
-    public const STATUS_DIAJUKAN = 'Diajukan';
-    public const STATUS_DIBATALKAN = 'Dibatalkan';
-    public const STATUS_DISETUJUI = 'Disetujui';
-    public const STATUS_DIPINJAM = 'Dipinjam';
-    public const STATUS_DITOLAK = 'Ditolak';
-    public const STATUS_DIKEMBALIKAN = 'Dikembalikan';
+    public const PINJAM_DIAJUKAN = 'Diajukan Peminjaman';
+    public const PINJAM_DIBATALKAN = 'Peminjaman Dibatalkan';
+    public const PINJAM_DISETUJUI = 'Peminjaman Disetujui';
+    public const PINJAM_DITOLAK = 'Peminjaman Ditolak';
+    public const DIPINJAM = 'Sedang Dipinjam';
+    public const KEMBALI_DIAJUKAN = 'Diajukan Pengembalian';
+    public const KEMBALI_DISETUJUI = 'Pengembalian Disetujui';
+    public const KEMBALI_DITOLAK = 'Pengembalian Ditolak';
+    public const SELESAI = 'Selesai';
 
     public const STATUS_PEMINJAMAN = [
-        self::STATUS_DIAJUKAN,
-        self::STATUS_DIBATALKAN,
-        self::STATUS_DISETUJUI,
-        self::STATUS_DIPINJAM,
-        self::STATUS_DITOLAK,
-        self::STATUS_DIKEMBALIKAN,
+        self::PINJAM_DIAJUKAN,
+        self::PINJAM_DIBATALKAN,
+        self::PINJAM_DISETUJUI,
+        self::PINJAM_DITOLAK,
+        self::DIPINJAM,
+        self::KEMBALI_DIAJUKAN,
+        self::KEMBALI_DISETUJUI,
+        self::KEMBALI_DITOLAK,
+        self::SELESAI,
     ];
     
     protected $fillable = [
@@ -32,9 +38,12 @@ class Peminjaman extends Model
         'tgl_rencana_kembali',
         'status',
         'tgl_realisasi_kembali',
-        'approver_id',
+        'approver_pinjam',
+        'peminjaman_approved_at',
         'keterangan_pinjam',
+        'approver_kembali',
         'keterangan_kembali',
+        'pengembalian_approved_at',
     ];
 
     protected $casts = [
@@ -48,9 +57,14 @@ class Peminjaman extends Model
         return $this->belongsTo(User::class, 'pengguna_id');
     }
 
-    public function approver()
+    public function approverPinjam()
     {
-        return $this->belongsTo(User::class, 'approver_id');
+        return $this->belongsTo(User::class, 'approver_pinjam');
+    }
+
+    public function approverKembali()
+    {
+        return $this->belongsTo(User::class, 'approver_kembali');
     }
 
     public function details()

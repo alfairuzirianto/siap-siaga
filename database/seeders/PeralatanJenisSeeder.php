@@ -14,11 +14,11 @@ class PeralatanJenisSeeder extends Seeder
     public function run(): void
     {
         PeralatanJenis::insert([
-            ['nama_jenis' => 'Genset'],
-            ['nama_jenis' => 'UPS'],
-            ['nama_jenis' => 'Panel MCB'],
-            ['nama_jenis' => 'Panel Pengumpul'],
-            ['nama_jenis' => 'Panel Stop Kontak'],
+            ['nama_jenis' => 'Genset', 'created_at' => now()],
+            ['nama_jenis' => 'UPS', 'created_at' => now()],
+            ['nama_jenis' => 'Panel MCB', 'created_at' => now()],
+            ['nama_jenis' => 'Panel Pengumpul', 'created_at' => now()],
+            ['nama_jenis' => 'Panel Stop Kontak', 'created_at' => now()],
         ]);
     }
 }

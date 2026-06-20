@@ -20,9 +20,12 @@ return new class extends Migration
             $table->date('tgl_rencana_kembali');
             $table->string('status');
             $table->date('tgl_realisasi_kembali')->nullable();
-            $table->foreignId('approver_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('approver_pinjam')->nullable()->constrained('users')->nullOnDelete();
             $table->string('keterangan_pinjam')->nullable();
+            $table->timestamp('peminjaman_approved_at')->nullable();
+            $table->foreignId('approver_kembali')->nullable()->constrained('users')->nullOnDelete();
             $table->string('keterangan_kembali')->nullable();
+            $table->timestamp('pengembalian_approved_at')->nullable();
             $table->timestamps();
         });
 

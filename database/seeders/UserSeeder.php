@@ -24,15 +24,7 @@ class UserSeeder extends Seeder
                 'role' => User::ROLE_ADMIN,
                 'email' => 'admin@test.com',
                 'password' => Hash::make('12345678'),
-            ], [
-                'nama_lengkap' => 'Budi',
-                'nip' => '123456',
-                'jabatan' => 'Staff',
-                'unit' => 'UP3 Palembang',
-                'username' => 'budi',
-                'role' => User::ROLE_PENGGUNA,
-                'email' => 'budi@test.com',
-                'password' => Hash::make('12345678'),
+                'created_at' => now(),
             ], [
                 'nama_lengkap' => 'Reza',
                 'nip' => '123456',
@@ -42,7 +34,28 @@ class UserSeeder extends Seeder
                 'role' => User::ROLE_SUPERVISOR,
                 'email' => 'reza@test.com',
                 'password' => Hash::make('12345678'),
-            ]
+                'created_at' => now(),
+            ], [
+                'nama_lengkap' => 'Budi',
+                'nip' => '123456',
+                'jabatan' => 'Staff',
+                'unit' => 'UP3 Palembang',
+                'username' => 'budi',
+                'role' => User::ROLE_PENGGUNA,
+                'email' => 'budi@test.com',
+                'password' => Hash::make('12345678'),
+                'created_at' => now(),
+            ], [
+                'nama_lengkap' => 'Ciko',
+                'nip' => '123456',
+                'jabatan' => 'Staff',
+                'unit' => 'UP3 Palembang',
+                'username' => 'ciko',
+                'role' => User::ROLE_PENGGUNA,
+                'email' => 'ciko@test.com',
+                'password' => Hash::make('12345678'),
+                'created_at' => now(),
+            ],
         ]);
     }
 }

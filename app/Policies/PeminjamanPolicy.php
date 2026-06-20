@@ -21,9 +21,12 @@ class PeminjamanPolicy
      */
     public function view(User $user, Peminjaman $peminjaman): bool
     {
-        return ($user->hasRole(User::ROLE_PENGGUNA)
-            && $user->id === $peminjaman->peminjam->id)
-            || $user->isAdmin();
+        if ($user->hasRole(User::ROLE_ADMIN, User::ROLE_SUPERVISOR))
+        {
+            return true;
+        }
+
+        return $user->id === $peminjaman->pengguna->id;
     }
 
     /**

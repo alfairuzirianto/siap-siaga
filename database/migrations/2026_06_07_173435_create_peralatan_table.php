@@ -21,8 +21,8 @@ return new class extends Migration
             $table->id();
             $table->string('nomor_seri')->unique();
             $table->foreignId('peralatan_jenis_id')->constrained('peralatan_jenis')->cascadeOnDelete();
-            $table->integer('kapasitas');
-            $table->string('satuan');
+            $table->decimal('kapasitas', 5, 2)->nullable();
+            $table->string('satuan')->nullable();
             $table->string('lokasi');
             $table->string('foto')->nullable();
             $table->string('status');
