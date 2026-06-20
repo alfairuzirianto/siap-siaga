@@ -85,7 +85,7 @@
                         </button>
                     </div>
                     <p class="text-[11px] text-slate-400 mt-1">
-                        {{ $user && $user->exists ? 'Kosongkan jika tidak berencana mengubah sandi.' : 'Kosongkan jika ingin password default disamakan dengan NIP / Username.' }}
+                        {{ $user && $user->exists ? 'Kosongkan jika tidak berencana mengubah sandi.' : '' }}
                     </p>
                     @error('password') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
                 </div>

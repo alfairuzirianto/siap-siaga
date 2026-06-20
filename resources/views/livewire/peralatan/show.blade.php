@@ -162,7 +162,7 @@
                                                     {{ $maint->jenis_pemeliharaan }}
                                                 </span>
                                             </td>
-                                            <td class="py-3.5 px-4 text-right font-mono font-medium text-slate-700 whitespace-nowrap">
+                                            <td class="py-3.5 px-4 text-right font-medium text-slate-700 whitespace-nowrap">
                                                 Rp {{ number_format($maint->biaya, 0, ',', '.') }}
                                             </td>
                                             <td class="py-3.5 px-6 text-slate-500 max-w-xs truncate" title="{{ $maint->deskripsi }}">
@@ -190,10 +190,10 @@
                             <table class="w-full text-left border-collapse min-w-[600px]">
                                 <thead>
                                     <tr class="border-b border-slate-100 text-xs font-bold uppercase tracking-wider text-slate-400 bg-slate-50/40">
-                                        <th class="py-3 px-6">No. Pinjam / Pemohon</th>
-                                        <th class="py-3 px-4">Tujuan Penggunaan</th>
+                                        <th class="py-3 px-6">Pemohon</th>
+                                        <th class="py-3 px-4">Keperluan</th>
                                         <th class="py-3 px-4">Rencana Durasi</th>
-                                        <th class="py-3 px-4">Status Alur</th>
+                                        <th class="py-3 px-4">Status</th>
                                         <th class="py-3 px-6">Realisasi Kembali</th>
                                     </tr>
                                 </thead>
@@ -204,7 +204,7 @@
                                         <tr class="hover:bg-slate-50/50 transition-colors">
                                             <td class="py-3.5 px-6 whitespace-nowrap">
                                                 <span class="font-semibold text-slate-800 block">{{ $pinjam->nomor_peminjaman }}</span>
-                                                <span class="text-xs text-slate-500 font-medium">{{ $pinjam->pengguna?->name ?? '—' }}</span>
+                                                <span class="text-xs text-slate-500 font-medium">{{ $pinjam->pengguna?->nama_lengkap ?? '—' }}</span>
                                             </td>
                                             <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate" title="{{ $pinjam->tujuan_keperluan }}">
                                                 {{ $pinjam->tujuan_keperluan }}
@@ -226,7 +226,6 @@
                                                     <span class="text-green-600 flex items-center gap-1">
                                                         <i class="ti ti-calendar-check text-base"></i>
                                                             {{ formatTanggal($pinjam->tgl_realisasi_kembali, 'd M Y') }}
-
                                                     </span>
                                                 @else
                                                     <span class="text-slate-400 italic text-xs">Belum dikembalikan</span>

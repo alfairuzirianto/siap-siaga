@@ -190,7 +190,7 @@
                                         </p>
                                         <p class="text-slate-800">
                                             <i class="text-base text-slate-400 me-1 ti ti-circuit-resistor"></i>
-                                            {{ $peralatan->kapasitas ? number_format($peralatan->kapasitas, 0, ',', '.') : 'Kapasitas: —' }} {{ $peralatan->satuan ?? '' }}
+                                            {{ $peralatan->kapasitas ? number_format($peralatan->kapasitas, fmod($peralatan->kapasitas, 1) == 0 ? 0 : 1, ',', '.') : 'Kapasitas: —' }} {{ $peralatan->satuan ?? '' }}
                                         </p>
                                         <p class="text-slate-800">
                                             <i class="text-base text-slate-400 me-1 ti ti-map-pin"></i>

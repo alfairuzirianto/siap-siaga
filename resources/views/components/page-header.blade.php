@@ -8,13 +8,13 @@
     <div class="min-w-0">
         @if(count($breadcrumbs) > 0)
         <nav class="flex items-center gap-2 mb-2 flex-wrap text-[13px] md:text-sm">
-            <a href="{{ route('dashboard') }}" class="text-slate-400 hover:text-slate-600 transition-colors flex items-center">
+            <a wire:navigate href="{{ route('dashboard') }}" class="text-slate-400 hover:text-slate-600 transition-colors flex items-center">
                 <i class="ti ti-home text-base"></i>
             </a>
             @foreach($breadcrumbs as $crumb)
             <i class="ti ti-chevron-right text-slate-300 text-xs mt-0.5"></i>
             @if(isset($crumb['url']))
-                <a href="{{ $crumb['url'] }}" class="text-slate-400 hover:text-slate-600 font-medium transition-colors truncate">
+                <a wire:navigate href="{{ $crumb['url'] }}" class="text-slate-400 hover:text-slate-600 font-medium transition-colors truncate">
                     {{ $crumb['label'] }}
                 </a>
             @else

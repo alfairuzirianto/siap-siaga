@@ -19,6 +19,6 @@ class Show extends Component
 
     public function render()
     {
-        return view('livewire.administrasi.log-show');
+        return view('livewire.activity-log.show');
     }
 }

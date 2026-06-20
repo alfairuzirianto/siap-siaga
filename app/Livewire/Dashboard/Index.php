@@ -3,7 +3,6 @@
 namespace App\Livewire\Dashboard;
 
 use App\Models\ActivityLog;
-use App\Models\Approval;
 use App\Models\Pemeliharaan;
 use App\Models\Peminjaman;
 use App\Models\Peralatan;
@@ -18,18 +17,12 @@ class Index extends Component
         $data = [
             'totalEquipment'    => Peralatan::count(),
             'maintenanceCount'  => Pemeliharaan::count(),
-            'activeBorrow'      => Peminjaman::whereIn('status', [
-               Peminjaman::STATUS_DIAJUKAN,
-               Peminjaman::STATUS_DISETUJUI,
-               Peminjaman::STATUS_DIPINJAM,
-            ])
-            ->count(),
+            'activeBorrow'      => Peminjaman::where('status', Peminjaman::DIPINJAM)->count(),
         ];
 
         if ($user->isSupervisor()) {
-            $data['pendingApprovals'] = Approval::query()
-                ->where('unit_id', $user->unit_id)
-                ->where('status', 'pending')
+            $data['pendingApprovals'] = Peminjaman::query()
+                ->where('status', [Peminjaman::PINJAM_DIAJUKAN, Peminjaman::KEMBALI_DIAJUKAN])
                 ->count();
         }
 

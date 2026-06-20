@@ -72,34 +72,18 @@
         <nav class="flex-1 overflow-y-auto py-3 px-2 flex flex-col gap-1">
             {{-- Utama --}}
             <x-sidebar-group label="Utama">
-                @if (auth()->user()->hasRole(App\Models\User::ROLE_ADMIN, App\Models\User::ROLE_SUPERVISOR))
-                <x-sidebar-item route="dashboard" icon="ti-dashboard" label="Dashboard" />
+                @if(auth()->user()->isAdmin())
+                    <x-sidebar-item route="dashboard" icon="ti-dashboard" label="Dashboard" />                    
+                    <x-sidebar-item route="peralatan.index" icon="ti-box" label="Peralatan" />
+                    <x-sidebar-item route="peminjaman.index" icon="ti-file-description" label="Peminjaman" />
+                    <x-sidebar-item route="pemeliharaan.index" icon="ti-tool"            label="Maintenance" />
+                @elseif(auth()->user()->isPengguna())
+                    <x-sidebar-item route="peminjaman.index" icon="ti-file-description" label="Peminjaman" />
+                @elseif(auth()->user()->isSupervisor())
+                    <x-sidebar-item route="validasi" icon="ti-shield-check"   label="Validasi" />
+                    <x-sidebar-item route="dashboard"    icon="ti-chart-bar"      label="Laporan" />
                 @endif
-                    
-                @can('viewAny', App\Models\Peralatan::class)
-                <x-sidebar-item route="peralatan.index" icon="ti-box" label="Peralatan" />
-                @endcan
-
-                @can('viewAny', App\Models\Peminjaman::class)
-                <x-sidebar-item route="dashboard" icon="ti-file-description" label="Peminjaman" />
-                @endcan
             </x-sidebar-group>
-
-            {{-- Operasional --}}
-            @can('viewAny', App\Models\Pemeliharaan::class)
-            <x-sidebar-group label="Operasional">
-                <x-sidebar-item route="pemeliharaan.index" icon="ti-tool"            label="Maintenance" />
-            </x-sidebar-group>
-            @endcan
-
-            {{-- Supervisor --}}
-            @if(auth()->user()->isSupervisor())
-            <x-sidebar-group label="Supervisor">
-                <x-sidebar-item route="dashboard" icon="ti-shield-check"   label="Approval Pinjam" />
-                <x-sidebar-item route="dashboard" icon="ti-package-import" label="Validasi Kembali" />
-                <x-sidebar-item route="dashboard"    icon="ti-chart-bar"      label="Laporan" />
-            </x-sidebar-group>
-            @endif
 
             {{-- Administrasi --}}
             @if(auth()->user()->isAdmin())
@@ -241,20 +225,29 @@
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-10 h-[60px]
                 bg-white border-t border-slate-200 flex items-stretch">
 
+        @if(auth()->user()->isAdmin())
         <a href="{{ route('dashboard') }}" wire:navigate
            class="{{ request()->routeIs('dashboard') ? 'bottom-nav-item-active' : 'bottom-nav-item' }}">
-            <i class="ti ti-dashboard"></i>
-            <span>Dashboard</span>
+           <i class="ti ti-dashboard"></i>
+           <span>Dashboard</span>
         </a>
-
-        @if(auth()->user()->isAdmin())
         <a href="{{ route('peralatan.index') }}" wire:navigate
            class="{{ request()->routeIs('peralatan.*') ? 'bottom-nav-item-active' : 'bottom-nav-item' }}">
             <i class="ti ti-box"></i>
             <span>Peralatan</span>
         </a>
-
-        <a href="#" wire:navigate
+        <a href="{{ route('peminjaman.index') }}" wire:navigate
+           class="{{ request()->routeIs('peminjaman.*') ? 'bottom-nav-item-active' : 'bottom-nav-item' }}">
+            <i class="ti ti-box"></i>
+            <span>Peminjaman</span>
+        </a>
+        @elseif (auth()->user()->isPengguna())
+        <a href="{{ route('peminjaman.index') }}" wire:navigate
+           class="{{ request()->routeIs('peminjaman.*') ? 'bottom-nav-item-active' : 'bottom-nav-item' }}">
+            <i class="ti ti-box"></i>
+            <span>Peminjaman</span>
+        </a>
+        <a href="{{ route('peminjaman.create') }}" wire:navigate
            class="flex flex-col items-center justify-center flex-1 -mt-4">
             <div class="w-12 h-12 rounded-full bg-primary-600 flex items-center
                         justify-center shadow-lg">
@@ -262,10 +255,10 @@
             </div>
         </a>
         @elseif(auth()->user()->isSupervisor())
-        <a href="#" wire:navigate
-           class="{{ request()->routeIs('approvals.*') ? 'bottom-nav-item-active' : 'bottom-nav-item' }}">
+        <a href="{{ route('validasi') }}" wire:navigate
+           class="{{ request()->routeIs('validasi') ? 'bottom-nav-item-active' : 'bottom-nav-item' }}">
             <i class="ti ti-shield-check"></i>
-            <span>Approval</span>
+            <span>Validasi</span>
         </a>
         <a href="#" wire:navigate
            class="{{ request()->routeIs('reports.*') ? 'bottom-nav-item-active' : 'bottom-nav-item' }}">
