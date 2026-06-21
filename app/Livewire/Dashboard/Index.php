@@ -15,15 +15,21 @@ class Index extends Component
         $user = auth()->user();
 
         $data = [
-            'totalEquipment'    => Peralatan::count(),
-            'maintenanceCount'  => Pemeliharaan::count(),
-            'activeBorrow'      => Peminjaman::where('status', Peminjaman::DIPINJAM)->count(),
+            'totalPeralatan'    => Peralatan::count(),
+            'totalPemeliharaan' => Pemeliharaan::count(),
+            'peminjamanAktif'   => Peminjaman::where('status', Peminjaman::DIPINJAM)->count(),
         ];
 
         if ($user->isSupervisor()) {
-            $data['pendingApprovals'] = Peminjaman::query()
-                ->where('status', [Peminjaman::PINJAM_DIAJUKAN, Peminjaman::KEMBALI_DIAJUKAN])
+            $data['validasiPending'] = Peminjaman::query()
+                ->whereIn('status', [Peminjaman::PINJAM_DIAJUKAN, Peminjaman::KEMBALI_DIAJUKAN])
                 ->count();
+
+            $data['antreanValidasi'] = Peminjaman::with('pengguna')
+                ->whereIn('status', [Peminjaman::PINJAM_DIAJUKAN, Peminjaman::KEMBALI_DIAJUKAN])
+                ->latest()
+                ->limit(5)
+                ->get();
         }
 
         if ($user->isAdmin()) {

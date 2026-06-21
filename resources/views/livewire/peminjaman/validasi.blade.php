@@ -1,26 +1,26 @@
 <div>
     <x-page-header 
-        title="Validasi Pengajuan"
-        subtitle="Daftar pengajuan peminjaman dan pengembalian peralatan siaga" />
+        :title="$isPeminjaman ? 'Validasi Peminjaman' : 'Validasi Pengembalian'"
+        :subtitle="$isPeminjaman ? 'Daftar pengajuan peminjaman peralatan siaga' : 'Daftar pengajuan pengembalian peralatan siaga'" />
 
     <div class="card bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row items-center gap-3">
             <div class="sm:w-48">
                 <select wire:model.live="filterStatus" class="form-input rounded-xl border-slate-200 text-sm py-2">
                     <option value="">-- Semua Status --</option>
-                    @foreach(App\Models\Peminjaman::STATUS_PEMINJAMAN as $status)
+                    @foreach($statuses as $status)
                         <option value="{{ $status }}">{{ $status }}</option>
                     @endforeach
                 </select>
             </div>
         </div>
-        @if($requests->isEmpty())
-            <div class="p-12">
-                <x-empty-state 
-                    icon="ti-shield-check"
-                    title="Tidak ada pengajuan"
-                    message="Belum ada pengajuan saat ini." />
-            </div>
+        @if($pengajuans->isEmpty())
+        <div class="p-12">
+            <x-empty-state 
+                icon="ti-shield-check"
+                title="Tidak ada pengajuan"
+                message="Belum ada pengajuan saat ini." />
+        </div>
         @else
             <div class="overflow-x-auto">
                 <table class="table">
@@ -34,7 +34,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
-                        @foreach($requests as $row)
+                        @foreach($pengajuans as $row)
                             <tr class="hover:bg-slate-50/30 transition-colors" wire:key="req-row-{{ $row->id }}">
                                 <td class="py-3.5 px-6 whitespace-nowrap">
                                     <span class="text-slate-800 font-bold block">{{ $row->pengguna?->nama_lengkap }}</span>
@@ -69,7 +69,7 @@
                 </table>
             </div>
             <div class="p-4 border-t border-slate-100 bg-slate-50/30">
-                {{ $requests->links() }}
+                {{ $pengajuans->links() }}
             </div>
         @endif
     </div>

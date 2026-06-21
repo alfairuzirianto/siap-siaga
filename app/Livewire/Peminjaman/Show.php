@@ -69,7 +69,12 @@ class Show extends Component
         
         $this->isApprovalModalOpen = false;
         session()->flash('success', 'Pengajuan selesai divalidasi.');
-        return redirect()->route('validasi');
+
+        if ($this->peminjaman->status === Peminjaman::PINJAM_DISETUJUI) {
+            return redirect()->route('validasi.peminjaman');
+        } else {
+            return redirect()->route('validasi.pengembalian');
+        }
     }
 
     public function updatedTempFotos($value, $index): void

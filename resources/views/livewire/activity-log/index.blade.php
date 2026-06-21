@@ -36,9 +36,9 @@
                     <thead>
                         <tr class="border-b border-slate-200 text-xs font-bold uppercase text-slate-400 bg-slate-50/30 tracking-wider">
                             <th class="py-3.5 px-6">Waktu Kejadian</th>
-                            <th class="py-3.5 px-4">Operator Pegawai</th>
+                            <th class="py-3.5 px-4">Aktor</th>
                             <th class="py-3.5 px-4">Tindakan</th>
-                            <th class="py-3.5 px-4">Nama Modul / Tabel</th>
+                            <th class="py-3.5 px-4">Nama Modul</th>
                             <th class="py-3.5 px-4">ID Record</th>
                             <th class="py-3.5 px-6 text-center">Metadata</th>
                         </tr>
@@ -46,12 +46,14 @@
                     <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
                         @foreach($logs as $log)
                             <tr class="hover:bg-slate-50/40 transition-colors" wire:key="log-row-{{ $log->id }}">
-                                <td class="py-3.5 px-6 whitespace-nowrap font-mono text-xs text-slate-500">
-                                    {{ formatTanggal($log->created_at, 'd M Y, H:i') . " WIB" }}
+                                <td class="py-3.5 px-6 whitespace-nowrap text-xs text-slate-500">
+                                    {{ formatTanggal($log->created_at, 'd M Y') }}
+                                    <br>
+                                    {{ formatTanggal($log->created_at, 'H:i') }} WIB
                                 </td>
                                 <td class="py-3.5 px-4 whitespace-nowrap">
                                     <span class="text-slate-800 font-semibold block">{{ $log->user?->nama_lengkap ?? 'Sistem Otomatis' }}</span>
-                                    <span class="text-xs text-slate-400 font-normal font-mono">{{ $log->user?->username }}</span>
+                                    <span class="text-xs text-slate-400 font-normal">{{ $log->user?->username }}</span>
                                 </td>
                                 <td class="py-3.5 px-4 whitespace-nowrap">
                                     <span class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-bold ring-1 ring-inset
@@ -66,10 +68,10 @@
                                         {{ $log->aksi }}
                                     </span>
                                 </td>
-                                <td class="py-3.5 px-4 whitespace-nowrap font-mono text-xs text-slate-600 capitalize">
+                                <td class="py-3.5 px-4 whitespace-nowrap text-xs text-slate-600 capitalize">
                                     {{ str_replace('_', ' ', $log->nama_table) }}
                                 </td>
-                                <td class="py-3.5 px-4 whitespace-nowrap font-mono text-xs text-slate-500">
+                                <td class="py-3.5 px-4 whitespace-nowrap text-xs text-slate-500">
                                     #{{ $log->record_id }}
                                 </td>
                                 <td class="py-3.5 px-6 whitespace-nowrap text-center">

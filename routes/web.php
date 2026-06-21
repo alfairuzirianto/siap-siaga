@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BeritaAcaraController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Dashboard\Index as Dashboard;
 use App\Livewire\Peralatan\Index as PeralatanIndex;
@@ -17,18 +18,22 @@ use App\Livewire\Peminjaman\Index as PeminjamanIndex;
 use App\Livewire\Peminjaman\Form as PeminjamanForm;
 use App\Livewire\Peminjaman\Show as PeminjamanShow;
 use App\Livewire\Peminjaman\Validasi as Validasi;
+use App\Livewire\Laporan\Index as LaporanIndex;
+use App\Livewire\Laporan\Show as LaporanShow;
 use Illuminate\Support\Facades\Route;
 
 
 Route::middleware(['auth'])->group(function () {    
     Route::get('/', function () {
         if (auth()->user()->isAdmin()) return redirect()->route('dashboard');
-        if (auth()->user()->isSupervisor()) return redirect()->route('validasi');
+        if (auth()->user()->isSupervisor()) return redirect()->route('dashboard');
         if (auth()->user()->isPengguna()) return redirect()->route('peminjaman.index');
     });
 
+    Route::get('dashboard', Dashboard::class)
+        ->middleware(['role:Admin,Supervisor'])->name('dashboard');
+
     Route::middleware(['role:Admin'])->group(function () {
-        Route::get('dashboard', Dashboard::class)->name('dashboard');
         Route::prefix('peralatan')->name('peralatan.')->group(function () {
             Route::get('/', PeralatanIndex::class)->name('index');
             Route::get('create', PeralatanForm::class)->name('create');
@@ -61,7 +66,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('{peminjaman}', PeminjamanShow::class)->middleware(['can:view,peminjaman'])->name('show');
     });
     
-    Route::get('validasi', Validasi::class)->middleware(['role:Supervisor'])->name('validasi');
+    Route::middleware(['role:Supervisor'])->group(function () {
+        Route::name('validasi.')->group(function () {
+            Route::get('validasi-peminjaman', Validasi::class)->name('peminjaman');
+            Route::get('validasi-pengembalian', Validasi::class)->name('pengembalian');
+        });
+
+        Route::prefix('laporan')->name('laporan.')->group(function () {
+            Route::get('/', LaporanIndex::class)->name('index');
+            Route::get('{jenis}', LaporanShow::class)->name('show');
+            Route::get('{jenis}/download', [LaporanController::class, 'download'])->name('download');
+        });
+    });
+
     Route::get('/berita-acara/{ba}/download', [BeritaAcaraController::class, 'download'])
         ->middleware(['role:Admin,Supervisor'])->name('ba.download');
 });

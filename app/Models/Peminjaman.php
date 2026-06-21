@@ -24,6 +24,9 @@ class Peminjaman extends Model
         self::PINJAM_DISETUJUI,
         self::PINJAM_DITOLAK,
         self::DIPINJAM,
+    ];
+
+    public const STATUS_PENGEMBALIAN = [
         self::KEMBALI_DIAJUKAN,
         self::KEMBALI_DISETUJUI,
         self::KEMBALI_DITOLAK,

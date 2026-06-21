@@ -2,7 +2,7 @@
     <x-page-header title="Rincian Log Aktivitas #{{ $log->id }}" subtitle="Inspeksi metadata perubahan data mentah JSON di dalam database"
         :breadcrumbs="[['label' => 'Log Aktivitas', 'url' => route('activity-logs.index')], ['label' => 'Detail #' . $log->id]]">
         <a href="{{ route('activity-logs.index') }}" wire:navigate 
-           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200/80 rounded-xl transition-all">
+           class="btn-ghost">
             <i class="ti ti-arrow-left text-base"></i>
             <span>Kembali</span>
         </a>
@@ -13,20 +13,20 @@
         <!-- KOLOM KIRI: RINGKASAN DATA OPERATOR -->
         <div class="lg:col-span-1 space-y-6">
             <div class="card bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-2">Informasi Eksekusi</h3>
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-2">Informasi Aktivitas</h3>
                 
                 <div class="space-y-3 text-sm">
                     <div>
-                        <span class="text-xs text-slate-400 block font-medium">Nama Eksekutor</span>
+                        <span class="text-xs text-slate-400 block font-medium">Aktor</span>
                         <span class="font-bold text-slate-800">{{ $log->user?->nama_lengkap ?? 'Sistem Otomatis' }}</span>
                     </div>
                     <div>
-                        <span class="text-xs text-slate-400 block font-medium">Username / Akun</span>
-                        <span class="font-mono text-xs text-slate-600 bg-slate-50 px-2 py-0.5 rounded-md inline-block mt-0.5">{{ $log->user?->username ?? 'system' }}</span>
+                        <span class="text-xs text-slate-400 block font-medium">Username</span>
+                        <span class="text-xs text-slate-600 bg-slate-50 px-2 py-0.5 rounded-md inline-block mt-0.5">{{ $log->user?->username ?? 'system' }}</span>
                     </div>
                     <div class="border-t border-slate-50 pt-2">
                         <span class="text-xs text-slate-400 block font-medium">Waktu Kejadian</span>
-                        <span class="font-medium text-slate-700 block mt-0.5"><i class="ti ti-calendar-time text-slate-400 mr-1"></i>{{ $log->created_at->format('d F Y, H:i:s') }} WIB</span>
+                        <span class="font-medium text-slate-700 block mt-0.5"><i class="ti ti-calendar-time text-slate-400 mr-1"></i>{{ formatTanggal($log->created_at, 'd F Y, H:i:s') }} WIB</span>
                     </div>
                     <div class="border-t border-slate-50 pt-2">
                         <span class="text-xs text-slate-400 block font-medium">Tindakan</span>
@@ -47,11 +47,11 @@
                     <div class="grid grid-cols-2 gap-2 border-t border-slate-50 pt-2">
                         <div>
                             <span class="text-xs text-slate-400 block font-medium">Modul Tabel</span>
-                            <span class="font-semibold text-slate-700 font-mono text-xs capitalize">{{ str_replace('_', ' ', $log->nama_table) }}</span>
+                            <span class="font-semibold text-slate-700 text-xs capitalize">{{ str_replace('_', ' ', $log->nama_table) }}</span>
                         </div>
                         <div>
                             <span class="text-xs text-slate-400 block font-medium">Record ID</span>
-                            <span class="font-semibold text-slate-700 font-mono text-xs">#{{ $log->record_id }}</span>
+                            <span class="font-semibold text-slate-700 text-xs">#{{ $log->record_id }}</span>
                         </div>
                     </div>
                 </div>
@@ -67,13 +67,13 @@
                     <!-- Old Value -->
                     <div class="space-y-1.5">
                         <span class="text-xs font-bold text-red-600 uppercase tracking-wide bg-red-50 px-2.5 py-0.5 rounded-md inline-block">Data Sebelum Aksi (Old Value)</span>
-                        <pre class="p-4 bg-slate-900 text-slate-300 font-mono text-xs rounded-xl overflow-x-auto max-h-[500px] leading-relaxed"><code>{{ $log->old_value ? json_encode($log->old_value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '{}' }}</code></pre>
+                        <pre class="p-4 bg-slate-900 text-slate-300 text-xs rounded-xl overflow-x-auto max-h-[500px] leading-relaxed"><code>{{ $log->old_value ? json_encode($log->old_value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '{}' }}</code></pre>
                     </div>
                     
                     <!-- New Value -->
                     <div class="space-y-1.5">
                         <span class="text-xs font-bold text-green-700 uppercase tracking-wide bg-green-50 px-2.5 py-0.5 rounded-md inline-block">Data Sesudah Aksi (New Value)</span>
-                        <pre class="p-4 bg-slate-900 text-slate-300 font-mono text-xs rounded-xl overflow-x-auto max-h-[500px] leading-relaxed"><code>{{ $log->new_value ? json_encode($log->new_value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '{}' }}</code></pre>
+                        <pre class="p-4 bg-slate-900 text-slate-300 text-xs rounded-xl overflow-x-auto max-h-[500px] leading-relaxed"><code>{{ $log->new_value ? json_encode($log->new_value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '{}' }}</code></pre>
                     </div>
                 </div>
             </div>

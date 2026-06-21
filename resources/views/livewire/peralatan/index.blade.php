@@ -173,7 +173,7 @@
                     <div class="divide-y divide-slate-100">
                         @foreach($peralatans as $peralatan)
                             <div wire:key="tab-eq-{{ $peralatan->id }}" class="p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/60 transition-colors">          
-                                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 flex-1 min-w-0 group">
+                                <a href="{{ route('peralatan.show', $peralatan) }}" wire:navigate class="flex items-center gap-3 flex-1 min-w-0 group">
                                     <div class="w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-slate-100 shrink-0 overflow-hidden border border-slate-200">
                                         @if($peralatan->foto)
                                             <img src="{{ Storage::url($peralatan->foto) }}" alt="Foto alat" class="w-full h-full object-cover">
