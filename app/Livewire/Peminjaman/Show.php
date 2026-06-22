@@ -33,19 +33,31 @@ class Show extends Component
             'beritaAcara.dokumentasi'
         ]);
 
-        $isAdmin = ($this->peminjaman->status === Peminjaman::PINJAM_DISETUJUI && auth()->user()->isAdmin());
-        $isPengguna  = ($this->peminjaman->status === Peminjaman::DIPINJAM && auth()->id() === $this->peminjaman->pengguna_id);
+        $isAdminPinjam = ($this->peminjaman->status === Peminjaman::PINJAM_DISETUJUI && auth()->user()->isAdmin());
+        $isAdmin = in_array($this->peminjaman->status, [Peminjaman::PINJAM_DISETUJUI, Peminjaman::KEMBALI_DISETUJUI]) && auth()->user()->isAdmin();
+        $isPengguna  = in_array($this->peminjaman->status, [Peminjaman::DIPINJAM, Peminjaman::KEMBALI_DITOLAK])&& auth()->id() === $this->peminjaman->pengguna_id;
 
         if ($isAdmin || $isPengguna) {
+            $jenisBAIni = ($isAdminPinjam) ? BeritaAcara::BA_PEMINJAMAN : BeritaAcara::BA_PENGEMBALIAN;
+            $existingBA = $this->peminjaman->beritaAcara
+                ->where('jenis_ba', $jenisBAIni)
+                ->where('is_valid', false)
+                ->first();
+
+            $existingDocs = $existingBA ? $existingBA->dokumentasi->values() : collect();
+
             foreach ($this->peminjaman->details as $index => $detail) {
+                $existingDoc = $existingDocs->get($index);
+
                 $this->dokumentasiItems[$index] = [
                     'peralatan_id' => $detail->peralatan_id,
                     'nomor_seri'   => $detail->peralatan?->nomor_seri,
                     'nama_jenis'   => $detail->peralatan?->jenis?->nama_jenis,
-                    'keterangan'   => $this->peminjaman->status === Peminjaman::DIPINJAM 
-                        ? 'Kondisi alat dikembalikan dalam keadaan normal.'
-                        : 'Serah Terima ' . $detail->peralatan?->jenis?->nama_jenis,
-                    'foto_paths'   => [],
+                    'keterangan'   => $existingDoc ? $existingDoc->keterangan
+                        : (in_array($this->peminjaman->status, [Peminjaman::DIPINJAM, Peminjaman::KEMBALI_DITOLAK])
+                            ? 'Kondisi alat dikembalikan dalam keadaan normal.'
+                            : 'Serah Terima ' . $detail->peralatan?->jenis?->nama_jenis),
+                    'foto_paths'   => $existingDoc ? (is_array($existingDoc->foto) ? $existingDoc->foto : json_decode($existingDoc->foto, true) ?? []) : [],
                 ];
                 $this->tempFotos[$index] = [];
             }
@@ -70,7 +82,7 @@ class Show extends Component
         $this->isApprovalModalOpen = false;
         session()->flash('success', 'Pengajuan selesai divalidasi.');
 
-        if ($this->peminjaman->status === Peminjaman::PINJAM_DISETUJUI) {
+        if (in_array($this->peminjaman->status, [Peminjaman::PINJAM_DISETUJUI, Peminjaman::PINJAM_DITOLAK])) {
             return redirect()->route('validasi.peminjaman');
         } else {
             return redirect()->route('validasi.pengembalian');
@@ -129,17 +141,21 @@ class Show extends Component
     public function generateBAKembali(PeminjamanService $service)
     {
         if (!auth()->user()->isAdmin()) abort(403);
-
-        $this->validate([
-            'dokumentasiItems.*.keterangan' => 'required|string|max:255',
-            'dokumentasiItems.*.foto_paths' => 'required|array|min:1',
-        ], [
-            'dokumentasiItems.*.foto_paths.required' => 'Wajib melampirkan dokumentasi pengembalian.'
-        ]);
-
+        
         $service->generateBA($this->peminjaman, [], BeritaAcara::BA_PENGEMBALIAN);
 
         session()->flash('success', 'Berita Acara Pengembalian berhasil diterbitkan.');
+    }
+
+    public function regenerateBA(int $baId, PeminjamanService $service)
+    {
+        if (!auth()->user()->isAdmin()) abort(403);
+
+        $ba = BeritaAcara::findOrFail($baId);
+        $service->removeBA($ba);
+
+        session()->flash('success', 'Berita Acara berhasil dihapus. Silakan lakukan validasi ulang data.');
+        return redirect()->route('peminjaman.show', $this->peminjaman->id);
     }
 
     public function render()

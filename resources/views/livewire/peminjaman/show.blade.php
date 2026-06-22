@@ -15,7 +15,7 @@
             ($peminjaman->status === App\Models\Peminjaman::KEMBALI_DIAJUKAN && auth()->user()->isSupervisor()) ||
             ($peminjaman->status === App\Models\Peminjaman::PINJAM_DISETUJUI && auth()->user()->isAdmin()) ||
             ($peminjaman->status === App\Models\Peminjaman::KEMBALI_DISETUJUI && auth()->user()->isAdmin()) ||
-            ($peminjaman->status === App\Models\Peminjaman::DIPINJAM && auth()->id() === $peminjaman->pengguna_id) ||
+            (in_array($peminjaman->status, [App\Models\Peminjaman::DIPINJAM, App\Models\Peminjaman::KEMBALI_DITOLAK]) && auth()->id() === $peminjaman->pengguna_id) ||
             ($peminjaman->beritaAcara->where('is_valid', true)->isNotEmpty() && ! auth()->user()->isPengguna());
     @endphp
 
@@ -54,12 +54,38 @@
                         </div>
                     </div>
 
-                    @if($peminjaman->approver)
+                    @if($peminjaman->approverPinjam)
                         <div class="border-t border-slate-50 pt-2 bg-slate-50/50 p-2.5 rounded-xl border border-slate-100">
-                            <span class="text-[10px] text-slate-400 block uppercase font-bold tracking-wide">Diverifikasi Oleh</span>
-                            <span class="text-xs font-bold text-slate-700 block mt-0.5">{{ $peminjaman->approver->nama_lengkap }}</span>
+                            <span class="text-[10px] text-slate-400 block uppercase font-bold tracking-wide">Divalidasi Oleh</span>
+                            <span class="text-xs font-bold text-slate-700 block mt-0.5">{{ $peminjaman->approverPinjam->nama_lengkap }}</span>
                             @if($peminjaman->keterangan_pinjam)
-                                <p class="text-xs text-slate-500 italic mt-1 font-normal">"{{ $peminjaman->keterangan_pinjam }}"</p>
+                                <span class="text-[10px] block uppercase font-bold tracking-wide mt-4
+                                    {{ match($peminjaman->status) {
+                                        App\Models\Peminjaman::PINJAM_DISETUJUI => 'text-green-500',
+                                        App\Models\Peminjaman::DIPINJAM => 'text-green-500',
+                                        App\Models\Peminjaman::SELESAI => 'text-green-500',
+                                        App\Models\Peminjaman::KEMBALI_DIAJUKAN => 'text-green-500',
+                                        App\Models\Peminjaman::KEMBALI_DISETUJUI => 'text-green-500',
+                                        App\Models\Peminjaman::KEMBALI_DITOLAK => 'text-green-500',
+                                        App\Models\Peminjaman::PINJAM_DITOLAK => 'text-rose-500',
+                                        default => 'text-slate-600'
+                                    } }}">
+                                    Catatan Validasi Peminjaman
+                                </span>
+                                <p class="text-xs text-slate-600 italic mt-0.5 font-normal">{{ $peminjaman->keterangan_pinjam }}</p>
+                            @endif
+                            @if($peminjaman->keterangan_kembali)
+                                <span class="text-[10px] block uppercase font-bold tracking-wide mt-4
+                                    {{ match($peminjaman->status) {
+                                        App\Models\Peminjaman::KEMBALI_DISETUJUI => 'text-green-500',
+                                        App\Models\Peminjaman::SELESAI => 'text-green-500',
+                                        App\Models\Peminjaman::KEMBALI_DITOLAK => 'text-rose-500',
+                                        App\Models\Peminjaman::KEMBALI_DIAJUKAN => 'text-rose-500',
+                                        default => 'text-slate-600'
+                                    } }}">
+                                    Catatan Validasi Pengembalian
+                                </span>
+                                <p class="text-xs text-slate-600 italic mt-0.5 font-normal">{{ $peminjaman->keterangan_kembali }}</p>
                             @endif
                         </div>
                     @endif
@@ -98,7 +124,7 @@
                         </h4>
                         <p class="text-xs text-slate-500 mt-1">Periksa rincian pengajuan sebelum konfirmasi validasi.</p>
                     </div>
-                    {{-- Preview Dokumentasi Pengembalain --}}
+                    {{-- Preview Dokumentasi Pengembalian --}}
                     @if($peminjaman->status === App\Models\Peminjaman::KEMBALI_DIAJUKAN)
                         @foreach($peminjaman->beritaAcara()->where('jenis_ba', App\Models\BeritaAcara::BA_PENGEMBALIAN)->where('is_valid', false)->get() as $draft)
                             <div class="text-left bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
@@ -107,7 +133,7 @@
                                     <p class="text-xs text-slate-600 mt-1">"{{ $doc->keterangan }}"</p>
                                     <div class="grid grid-cols-4 gap-2">
                                         @foreach($doc->foto as $img)
-                                            <div class="h-14 rounded-lg overflow-hidden border border-slate-200"><img src="{{ asset('storage/' . $img) }}" class="w-full h-full object-cover"></div>
+                                            <div class="min-h-24 rounded-lg overflow-hidden border border-slate-200"><img src="{{ asset('storage/' . $img) }}" class="w-full h-full object-cover"></div>
                                         @endforeach
                                     </div>
                                 @endforeach
@@ -172,10 +198,12 @@
             @endif
 
             {{-- Pengajuan Pengembalian oleh Pengguna --}}
-            @if($peminjaman->status === App\Models\Peminjaman::DIPINJAM && auth()->id() === $peminjaman->pengguna_id)
+            @if(in_array($peminjaman->status, [App\Models\Peminjaman::DIPINJAM, App\Models\Peminjaman::KEMBALI_DITOLAK]) && auth()->id() === $peminjaman->pengguna_id)
                 <div class="card bg-white rounded-2xl border border-primary-200 shadow-md overflow-hidden">
                     <div class="px-6 py-4 border-b border-primary-100 bg-primary-50/40">
-                        <h3 class="text-sm font-bold text-primary-800 uppercase tracking-wider">Formulir Pengembalian</h3>
+                        <h3 class="text-sm font-bold text-primary-800 uppercase tracking-wider">
+                            {{ $peminjaman->status === App\Models\Peminjaman::KEMBALI_DITOLAK ? 'Revisi Laporan Pengembalian' : 'Formulir Pengembalian' }}
+                        </h3>
                     </div>
                     <form wire:submit.prevent="ajukanPengembalian" class="p-6 space-y-5">
                         @foreach($dokumentasiItems as $index => $item)
@@ -208,7 +236,7 @@
                         @endforeach
                         <div class="flex items-center justify-end pt-2">
                             <button type="submit" class="px-5 py-2.5 text-xs font-bold text-white bg-primary-600 shadow-sm rounded-xl">
-                                Kirim Laporan Pengembalian
+                                Kirim Ulang Laporan Pengembalian
                             </button>
                         </div>
                     </form>
@@ -242,15 +270,37 @@
                                     <span class="font-bold text-slate-800 text-sm block">Berita Acara {{ $ba->jenis_ba }}</span>
                                     <span class="text-xs font-mono text-slate-400">{{ $ba->nomor_ba }}</span>
                                 </div>
-                                <a href="{{ route('ba.download', $ba) }}" class="inline-flex items-center gap-1 text-xs font-bold text-primary-600 hover:underline">
-                                    <i class="ti ti-download"></i> Unduh
-                                </a>
+                                <div class="md:flex gap-3">
+                                    <a href="{{ route('ba.download', $ba) }}" class="inline-flex items-center gap-1 text-xs font-bold text-primary-600 hover:underline">
+                                        <i class="ti ti-download"></i> Unduh
+                                    </a>
+                                    @if(auth()->user()->isAdmin())
+                                        <button class="text-xs font-bold text-red-600 hover:underline flex items-center gap-0.5 outline-none focus:outline-none"
+                                                x-on:click="
+                                                    Swal.fire({
+                                                        title: 'Hapus Berita Acara?',
+                                                        text: 'Berita acara ini akan dihapus dan akan diterbitkan ulang.',
+                                                        icon: 'warning',
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: '#dc2626',
+                                                        cancelButtonColor: '#6b7280',
+                                                        confirmButtonText: 'Ya, Hapus!',
+                                                        cancelButtonText: 'Batal'
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) { 
+                                                            $wire.regenerateBA({{ $ba->id }})
+                                                        }
+                                                    });
+                                                ">
+                                            <i class="ti ti-refresh"></i> Terbitkan Ulang
+                                        </button>
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
             @endif
-
         </div>
         @endif
     </div>
@@ -263,7 +313,6 @@
                 <div class="relative transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all w-full max-w-md text-left">
                     
                     @php
-                        // Menentukan judul modal secara dinamis berdasarkan target status
                         $isApproval = in_array($targetStatus, [App\Models\Peminjaman::PINJAM_DISETUJUI, App\Models\Peminjaman::KEMBALI_DISETUJUI]);
                         $isFasePinjam = in_array($targetStatus, [App\Models\Peminjaman::PINJAM_DISETUJUI, App\Models\Peminjaman::PINJAM_DITOLAK]);
                         
@@ -285,7 +334,7 @@
                             <label class="text-xs text-slate-400 font-medium">
                                 Catatan
                             </label>
-                            <textarea wire:model="catatanDecision" rows="3" 
+                            <textarea wire:model="keterangan" rows="3" 
                                       class="form-input rounded-xl border-slate-200 text-sm w-full focus:border-primary-500" 
                                       placeholder="{{ $isApproval ? 'Tulis catatan persetujuan jika ada...' : 'Tulis alasan penolakan/penangguhan secara jelas...' }}"></textarea>
                         </div>

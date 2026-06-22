@@ -126,10 +126,7 @@
                                         <span class="font-bold text-slate-800">{{ $row->nomor_peminjaman }}</span>
                                         <x-badge-status :status="$row->status" type="pengajuan" />
                                     </div>
-                                    <p class="text-xs text-slate-500 font-medium">Diajukan oleh {{ $row->pengguna?->nama_lengkap }} ({{ $row->pengguna?->unit ?? '—' }})</p>
-                                    <p class="text-xs text-slate-500 max-w-md">
-                                        Keperluan: <span class="text-slate-400 italic truncate">"{{ $row->tujuan_keperluan }}"</span>
-                                    </p>
+                                    <p class="text-xs text-slate-500">Diajukan oleh <span class="font-medium">{{ $row->pengguna?->nama_lengkap }} · {{ $row->pengguna?->unit ?? '—' }}</span></p>
                                 </div>
                                 <div class="shrink-0 flex items-center">
                                     <a href="{{ route('peminjaman.show', $row) }}" wire:navigate 

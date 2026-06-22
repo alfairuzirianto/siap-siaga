@@ -71,6 +71,16 @@ class PeminjamanService
         DB::transaction(function () use ($peminjaman, $dokumentasiItems) {
             $oldValue = $peminjaman->toArray();
 
+            $oldDraft = $peminjaman->beritaAcara()
+                ->where('jenis_ba', BeritaAcara::BA_PENGEMBALIAN)
+                ->where('is_valid', false)
+                ->get();
+
+            foreach ($oldDraft as $data) {
+                $data->dokumentasi()->delete();
+                $data->delete();
+            }
+
             // 1. Update status peminjaman menjadi Diajukan Kembali
             $peminjaman->update(['status' => Peminjaman::KEMBALI_DIAJUKAN]);
 
@@ -145,24 +155,33 @@ class PeminjamanService
             if ($jenisBA === BeritaAcara::BA_PENGEMBALIAN) {
                 $beritaAcara = $peminjaman->beritaAcara()
                     ->where('jenis_ba', BeritaAcara::BA_PENGEMBALIAN)
+                    ->where('is_valid', false)
                     ->first();
 
                 $beritaAcara->update(['is_valid' => true]);
             } else {
-                $beritaAcara = BeritaAcara::create([
-                    'peminjaman_id' => $peminjaman->id,
-                    'nomor_ba' => nomorBA($jenisBA),
-                    'jenis_ba' => $jenisBA,
-                    'token' => Str::uuid(),
-                    'is_valid' => true,
-                ]);
-    
-                foreach ($dokumentasiItems as $item) {
-                    BeritaAcaraDokumentasi::create([
-                        'berita_acara_id' => $beritaAcara->id,
-                        'keterangan' => $item['keterangan'],
-                        'foto' => $item['foto_paths'],
+                $beritaAcara = $peminjaman->beritaAcara()
+                    ->where('jenis_ba', BeritaAcara::BA_PEMINJAMAN)
+                    ->first();
+
+                if ($beritaAcara) {
+                    $beritaAcara->update(['nomor_ba' => nomorBA($jenisBA), 'is_valid' => true]);
+                } else {
+                    $beritaAcara = BeritaAcara::create([
+                        'peminjaman_id' => $peminjaman->id,
+                        'nomor_ba' => nomorBA($jenisBA),
+                        'jenis_ba' => $jenisBA,
+                        'token' => Str::uuid(),
+                        'is_valid' => true,
                     ]);
+        
+                    foreach ($dokumentasiItems as $item) {
+                        BeritaAcaraDokumentasi::create([
+                            'berita_acara_id' => $beritaAcara->id,
+                            'keterangan' => $item['keterangan'],
+                            'foto' => $item['foto_paths'],
+                        ]);
+                    }
                 }
             }
 
@@ -195,6 +214,32 @@ class PeminjamanService
             );
 
             return $beritaAcara;
+        });
+    }
+
+    /**
+     * Menghapus Berita Acara
+     */
+    public function removeBA(BeritaAcara $ba): void
+    {
+        DB::transaction(function () use ($ba) {
+            $peminjaman = $ba->peminjaman;
+
+            if ($ba->jenis_ba === BeritaAcara::BA_PEMINJAMAN) {
+                $ba->update(['nomor_ba' => 'DRAFT-' . Str::upper(Str::random(6)), 'is_valid' => false]);
+
+                $peminjaman->update(['status' => Peminjaman::PINJAM_DISETUJUI]);
+                foreach ($peminjaman->details as $detail) {
+                    $detail->peralatan->update(['status' => Peralatan::STATUS_TERSEDIA]);
+                }
+            } else {
+                $ba->update(['is_valid' => false]);
+
+                $peminjaman->update(['status' => Peminjaman::KEMBALI_DISETUJUI, 'tgl_realisasi_kembali' => null]);
+                foreach ($peminjaman->details as $detail) {
+                    $detail->peralatan->update(['status' => Peralatan::STATUS_DIPINJAM]);
+                }
+            }
         });
     }
     
