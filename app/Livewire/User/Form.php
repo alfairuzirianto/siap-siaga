@@ -13,11 +13,10 @@ class Form extends Component
     public string $nama_lengkap = '';
     public string $username = '';
     public string $email = '';
-    public string $role = 'Pengguna';
     public ?string $nip = null;
     public ?string $jabatan = null;
     public ?string $unit = null;
-    public string $password = '';
+    public ?string $password = null;
     public bool $is_active = true;
 
     public function mount(?User $user = null): void
@@ -28,7 +27,6 @@ class Form extends Component
             $this->nama_lengkap = $user->nama_lengkap;
             $this->username = $user->username;
             $this->email = $user->email;
-            $this->role = $user->role;
             $this->nip = $user->nip;
             $this->jabatan = $user->jabatan;
             $this->unit = $user->unit;
@@ -42,11 +40,10 @@ class Form extends Component
             'nama_lengkap' => 'required|string|max:255',
             'username'     => 'required|string|max:50|alpha_dash|unique:users,username,' . ($this->user?->id ?? 'NULL'),
             'email'        => 'required|string|email|max:255|unique:users,email,' . ($this->user?->id ?? 'NULL'),
-            'role'         => 'required|in:' . implode(',', User::ROLES),
             'nip'          => 'nullable|string|max:50',
             'jabatan'      => 'nullable|string|max:100',
             'unit'         => 'nullable|string|max:100',
-            'password'     => 'required|min:6',
+            'password'     => ($this->user && $this->user->exists) ? 'nullable|string|min:6' : 'required|string|min:6',
             'is_active'    => 'required|boolean',
         ];
     }
@@ -55,25 +52,23 @@ class Form extends Component
     {
         $validated = $this->validate();
 
-        if (!$this->user || !$this->user->exists) {
-            User::create($validated);
-            session()->flash('success', 'User baru berhasil didaftarkan.');
-        } else {
-            if (auth()->id() === $this->user->id) {
-                $validated['is_active'] = true;
-            }
-
-            if ($this->password) {
-                $validated['password'] = Hash::make($this->password);
-            } else {
+        if ($this->user && $this->user->exists) {
+            if (empty($validated['password'])) {
                 unset($validated['password']);
+            } else {
+                $validated['password'] = Hash::make($validated['password']);
             }
 
             $this->user->update($validated);
-            session()->flash('success', 'Data user berhasil diperbarui.');
+            session()->flash('success', 'Informasi user berhasil diperbarui.');
+        } else {
+            $validated['password'] = Hash::make($validated['password']);
+            
+            User::create($validated);
+            session()->flash('success', 'User baru berhasil didaftarkan.');
         }
 
-        return redirect()->route('users.index');
+        return $this->redirect(route('users.index'), navigate: true);
     }
 
     public function render()

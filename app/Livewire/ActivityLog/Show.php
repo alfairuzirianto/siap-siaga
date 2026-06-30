@@ -13,7 +13,6 @@ class Show extends Component
 
     public function mount(ActivityLog $activityLog): void
     {
-        if (!auth()->user()->isAdmin()) abort(403);
         $this->log = $activityLog->load('user');
     }
 

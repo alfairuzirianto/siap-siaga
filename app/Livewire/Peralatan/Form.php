@@ -42,22 +42,15 @@ class Form extends Component
         return [
             'nomor_seri'           => 'required|string|max:255|unique:peralatan,nomor_seri' . ($this->peralatan ? ',' . $this->peralatan->id : ''),
             'peralatan_jenis_id'   => 'required|exists:peralatan_jenis,id',
-            'status'               => 'required|in:' . implode(',', Peralatan::STATUS_PERALATAN),
             'kapasitas'            => 'nullable|numeric|min:0',
             'satuan'               => 'nullable|string|max:50',
-            'lokasi'               => 'nullable|string|max:255',
+            'lokasi'               => 'required|string|max:255',
             'foto'                 => 'nullable|image|max:2048',
         ];
     }
 
     public function save()
     {
-        if ($this->peralatan) {
-            $this->authorize('update', $this->peralatan);
-        } else {
-            $this->authorize('create', Peralatan::class);
-        }
-
         $validated = $this->validate();
 
         if ($this->foto) {
@@ -73,12 +66,11 @@ class Form extends Component
             session()->flash('success', 'Peralatan berhasil ditambahkan.');
         } else {
             $validated['updated_by'] = auth()->id();
-            unset($validated['status']);
             $this->peralatan->update($validated);
             session()->flash('success', 'Peralatan berhasil diperbarui.');
         }
 
-        return redirect()->route('peralatan.index');
+        return $this->redirect(route('peralatan.index'), navigate: true);
     }
 
     public function render()

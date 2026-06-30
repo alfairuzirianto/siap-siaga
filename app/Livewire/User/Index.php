@@ -13,9 +13,8 @@ class Index extends Component
     use WithPagination;
 
     public string $search = '';
-    public string $filterRole = '';
 
-    protected $updatesQueryString = ['search', 'filterRole'];
+    protected $updatesQueryString = ['search'];
 
     public function updatingSearch(): void
     {
@@ -40,10 +39,7 @@ class Index extends Component
                 $q->where('nama_lengkap', 'like', '%' . $this->search . '%')
                   ->orWhere('nip', 'like', '%' . $this->search . '%')
                   ->orWhere('username', 'like', '%' . $this->search . '%')
-                  ->orWhere('email', 'like', '%' . $this->search . '%')
-            )
-            ->when($this->filterRole, fn ($q) =>
-                $q->where('role', $this->filterRole)
+                  ->orWhere('unit', 'like', '%' . $this->search . '%')
             )
         )
         ->paginate(10);

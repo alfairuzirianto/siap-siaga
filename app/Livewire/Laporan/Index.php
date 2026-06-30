@@ -13,8 +13,6 @@ class Index extends Component
 {
     public function render()
     {
-        if (!auth()->user()->isSupervisor()) abort(403);
-
         $ringkasan = [
             'peralatan' => [
                 'total' => Peralatan::count(),
@@ -22,8 +20,8 @@ class Index extends Component
                 'dipinjam' => Peralatan::where('status', Peralatan::STATUS_DIPINJAM)->count(),
             ],
             'pemeliharaan' => [
-                'total' => Pemeliharaan::count(),
-                'biaya_estimasi' => Pemeliharaan::sum('biaya') ?? 0,
+                'preventif' => Pemeliharaan::where('jenis_pemeliharaan', Pemeliharaan::JENIS_PREVENTIF)->count(),
+                'korektif' => Pemeliharaan::where('jenis_pemeliharaan', Pemeliharaan::JENIS_KOREKTIF)->count(),
             ],
             'peminjaman' => [
                 'total' => Peminjaman::count(),

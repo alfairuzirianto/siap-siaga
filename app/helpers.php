@@ -32,7 +32,7 @@ function nomorBA(string $jenis): string
 
     $kodeJenis = match($jenis) {
         BeritaAcara::BA_PEMINJAMAN => 'PPB',
-        BeritaAcara::BA_PENGEMBALIAN => 'PBB',
+        BeritaAcara::BA_PENGEMBALIAN => 'STKB',
         default  => 'PPB',
     };
 

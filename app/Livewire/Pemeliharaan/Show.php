@@ -11,7 +11,6 @@ class Show extends Component
 
     public function mount(Pemeliharaan $pemeliharaan)
     {
-        $this->authorize('view', $pemeliharaan);
         $this->pemeliharaan = $pemeliharaan->load(['peralatan.jenis', 'creator', 'updater']);
     }
 

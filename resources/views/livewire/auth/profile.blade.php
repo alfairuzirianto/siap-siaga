@@ -13,7 +13,6 @@ new class extends Component {
     public string $jabatan = '';
     public string $unit = '';
     public string $username = '';
-    public string $role = '';
 
     public string $current_password = '';
     public string $password = '';
@@ -29,7 +28,6 @@ new class extends Component {
         $this->jabatan = $user->jabatan ?? '';
         $this->unit = $user->unit ?? '';
         $this->username = $user->username;
-        $this->role = $user->role;
     }
 
     public function updateProfile(): void
@@ -71,7 +69,6 @@ new class extends Component {
     {
         return [
             'user' => auth()->user(),
-            'availableRoles' => User::ROLES
         ];
     }
 }; ?>
@@ -101,7 +98,7 @@ new class extends Component {
                 
                 <div class="mt-3">
                     <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-0.5 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/20">
-                        {{ $role }}
+                        Admin
                     </span>
                 </div>
 
@@ -162,18 +159,6 @@ new class extends Component {
                             <label class="form-label text-slate-700 font-medium text-sm">Unit Kerja</label>
                             <input type="text" wire:model="unit" class="form-input rounded-xl border-slate-200 focus:border-primary-500 text-sm" placeholder="Contoh: PLN UP3 Palembang">
                             @error('unit') <p class="form-error font-medium mt-1">{{ $message }}</p> @enderror
-                        </div>
-
-                        <div class="space-y-1.5 md:col-span-1">
-                            <label class="form-label text-slate-700 font-medium text-sm">Role</label>
-                            <div class="relative">
-                                <select wire:model="role" {{ auth()->user()->isAdmin() ? '' : 'disabled' }}
-                                        class="form-input w-full rounded-xl border-slate-200 px-3 py-2 text-sm appearance-none">
-                                    @foreach($availableRoles as $availableRole)
-                                        <option value="{{ $availableRole }}">{{ $availableRole }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
                         </div>
                     </div>
 

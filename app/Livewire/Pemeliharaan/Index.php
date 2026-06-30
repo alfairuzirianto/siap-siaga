@@ -24,7 +24,6 @@ class Index extends Component
 
     public function delete(Pemeliharaan $pemeliharaan)
     {
-        $this->authorize('delete', $pemeliharaan);
         $pemeliharaan->delete();
         session()->flash('success', 'Data pemeliharaan berhasil dihapus.');
     }

@@ -7,28 +7,81 @@
 
     <div class="max-w-4xl mx-auto">
         <form wire:submit.prevent="save" class="space-y-6">
-            
             <div class="card bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-2">Detail Pengajuan</h3>
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-2">Biodata Pengguna</h3>
                 
                 <div class="space-y-4">
-                    <div class="space-y-1.5">
-                        <label class="form-label text-sm text-slate-700 font-medium">Tujuan Penggunaan <span class="text-red-500">*</span></label>
-                        <input type="text" wire:model="tujuan_keperluan" 
-                               class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
-                        @error('tujuan_keperluan') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="form-label text-sm text-slate-700 font-medium">Nama Pengguna <span class="text-red-500">*</span></label>
+                            <input type="text" wire:model="nama_pengguna" placeholder="Nama lengkap pengguna" class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
+                            @error('nama_pengguna') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="form-label text-sm text-slate-700 font-medium">NIP <span class="text-red-500">*</span></label>
+                            <input type="text" wire:model="nip" placeholder="Nomor induk pegawai" class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
+                            @error('nip') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="form-label text-sm text-slate-700 font-medium">Unit <span class="text-red-500">*</span></label>
+                            <input type="text" wire:model="unit" placeholder="Unit kerja pengguna" class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
+                            @error('unit') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="form-label text-sm text-slate-700 font-medium">Jabatan <span class="text-red-500">*</span></label>
+                            <input type="text" wire:model="jabatan" placeholder="Jabatan saat ini" class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
+                            @error('jabatan') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-2">Detail Peminjaman</h3>
+                
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="form-label text-sm text-slate-700 font-medium">Keperluan <span class="text-red-500">*</span></label>
+                            <input type="text" wire:model="tujuan_keperluan" placeholder="Deskripsikan keperluan peminjaman"
+                                   class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
+                            @error('tujuan_keperluan') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="form-label text-slate-700 font-medium text-sm">
+                                Status <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <select wire:model="status" 
+                                        class="form-input w-full rounded-xl border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 appearance-none focus:border-primary-500 focus:ring-primary-500 transition-all pr-10">
+                                    <option value="">-- Pilih Status Peminjaman --</option>
+                                    @foreach($statuses as $item)
+                                        <option value="{{ $item }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400 text-sm">
+                                    <i class="ti ti-chevron-down"></i>
+                                </div>
+                            </div>
+                            @error('status') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1.5">
-                            <label class="form-label text-sm text-slate-700 font-medium">Rencana Tanggal Mulai Pinjam <span class="text-red-500">*</span></label>
-                            <input type="date" wire:model="tgl_rencana_pinjam" class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
-                            @error('tgl_rencana_pinjam') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
+                            <label class="form-label text-sm text-slate-700 font-medium">Tanggal Mulai Pinjam <span class="text-red-500">*</span></label>
+                            <input type="date" wire:model="tgl_pinjam" class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
+                            @error('tgl_pinjam') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div class="space-y-1.5">
-                            <label class="form-label text-sm text-slate-700 font-medium">Rencana Tanggal Pengembalian <span class="text-red-500">*</span></label>
-                            <input type="date" wire:model="tgl_rencana_kembali" class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
-                            @error('tgl_rencana_kembali') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
+                            <label class="form-label text-sm text-slate-700 font-medium">Tanggal Pengembalian <span class="text-red-500">*</span></label>
+                            <input type="date" wire:model="tgl_kembali" class="form-input rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
+                            @error('tgl_kembali') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
@@ -50,7 +103,7 @@
                 @enderror
 
                 @if($peralatans->isEmpty())
-                    <x-empty-state icon="ti-box-off" title="Armada Habis" message="Seluruh peralatan logistik siaga saat ini sedang berstatus dipinjam atau maintenance." />
+                    <x-empty-state icon="ti-box-off" title="Peralatan Habis" message="Seluruh peralatan logistik siaga saat ini sedang berstatus dipinjam." />
                 @else
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         @foreach($peralatans as $peralatan)

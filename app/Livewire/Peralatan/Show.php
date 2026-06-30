@@ -12,14 +12,12 @@ class Show extends Component
 
     public function mount(Peralatan $peralatan)
     {
-        $this->authorize('view', $peralatan);
-
         $this->peralatan = $peralatan->load([
             'jenis',
             'creator',
             'updater',
             'pemeliharaan' => fn($q) => $q->latest('tanggal_pemeliharaan'),
-            'peminjamanDetail.peminjaman.pengguna' => fn($q) => $q->latest()
+            'peminjamanDetail.peminjaman' => fn($q) => $q->latest()
         ]);
     }
 

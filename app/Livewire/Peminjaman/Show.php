@@ -15,117 +15,70 @@ class Show extends Component
     use WithFileUploads;
 
     public Peminjaman $peminjaman;
-    
-    public bool $isApprovalModalOpen = false;
-    public string $keterangan = '';
-    public string $targetStatus = '';
-
     public array $dokumentasiItems = [];
     public $tempFotos = []; 
 
     public function mount(Peminjaman $peminjaman): void
     {
         $this->peminjaman = $peminjaman->load([
-            'pengguna', 
-            'approverPinjam', 
-            'approverKembali', 
             'details.peralatan.jenis', 
             'beritaAcara.dokumentasi'
         ]);
 
-        $isAdminPinjam = ($this->peminjaman->status === Peminjaman::PINJAM_DISETUJUI && auth()->user()->isAdmin());
-        $isAdmin = in_array($this->peminjaman->status, [Peminjaman::PINJAM_DISETUJUI, Peminjaman::KEMBALI_DISETUJUI]) && auth()->user()->isAdmin();
-        $isPengguna  = in_array($this->peminjaman->status, [Peminjaman::DIPINJAM, Peminjaman::KEMBALI_DITOLAK])&& auth()->id() === $this->peminjaman->pengguna_id;
+        $hasBAPinjam = $this->peminjaman->beritaAcara
+            ->where('jenis_ba', BeritaAcara::BA_PEMINJAMAN)
+            ->isNotEmpty();
 
-        if ($isAdmin || $isPengguna) {
-            $jenisBAIni = ($isAdminPinjam) ? BeritaAcara::BA_PEMINJAMAN : BeritaAcara::BA_PENGEMBALIAN;
-            $existingBA = $this->peminjaman->beritaAcara
-                ->where('jenis_ba', $jenisBAIni)
-                ->where('is_valid', false)
-                ->first();
+        if ($this->peminjaman->status === Peminjaman::DIPINJAM && !$hasBAPinjam) {
+            $groupedDetails = $this->peminjaman->details->groupBy('peralatan.peralatan_jenis_id');
 
-            $existingDocs = $existingBA ? $existingBA->dokumentasi->values() : collect();
+            foreach ($groupedDetails as $jenisId => $details) {
+                $samplePeralatan = $details->first()->peralatan;
+                
+                $daftarNomorSeri = $details->map(fn($d) => $d->peralatan?->nomor_seri)->implode(', ');
 
-            foreach ($this->peminjaman->details as $index => $detail) {
-                $existingDoc = $existingDocs->get($index);
-
-                $this->dokumentasiItems[$index] = [
-                    'peralatan_id' => $detail->peralatan_id,
-                    'nomor_seri'   => $detail->peralatan?->nomor_seri,
-                    'nama_jenis'   => $detail->peralatan?->jenis?->nama_jenis,
-                    'keterangan'   => $existingDoc ? $existingDoc->keterangan
-                        : (in_array($this->peminjaman->status, [Peminjaman::DIPINJAM, Peminjaman::KEMBALI_DITOLAK])
-                            ? 'Kondisi alat dikembalikan dalam keadaan normal.'
-                            : 'Serah Terima ' . $detail->peralatan?->jenis?->nama_jenis),
-                    'foto_paths'   => $existingDoc ? (is_array($existingDoc->foto) ? $existingDoc->foto : json_decode($existingDoc->foto, true) ?? []) : [],
+                $this->dokumentasiItems[$jenisId] = [
+                    'peralatan_jenis_id' => $jenisId,
+                    'nama_jenis'         => $samplePeralatan?->jenis?->nama_jenis,
+                    'nomor_seri'         => $daftarNomorSeri,
+                    'keterangan'         => 'Serah Terima ' . $samplePeralatan?->jenis?->nama_jenis,
+                    'foto_paths'         => [],
                 ];
-                $this->tempFotos[$index] = [];
+                $this->tempFotos[$jenisId] = [];
             }
-        }
-    }
-
-    public function openModal(string $status)
-    {
-        if (!auth()->user()->isSupervisor()) abort(403);
-        
-        $this->targetStatus = $status;
-        $this->keterangan = '';
-        $this->isApprovalModalOpen = true;
-    }
-
-    public function validasi(PeminjamanService $service)
-    {
-        if (!auth()->user()->isSupervisor()) abort(403);
-
-        $service->validasi($this->peminjaman, $this->targetStatus, $this->keterangan);
-        
-        $this->isApprovalModalOpen = false;
-        session()->flash('success', 'Pengajuan selesai divalidasi.');
-
-        if (in_array($this->peminjaman->status, [Peminjaman::PINJAM_DISETUJUI, Peminjaman::PINJAM_DITOLAK])) {
-            return redirect()->route('validasi.peminjaman');
-        } else {
-            return redirect()->route('validasi.pengembalian');
         }
     }
 
     public function updatedTempFotos($value, $index): void
     {
-        $this->validate(["tempFotos.{$index}.*" => 'image|max:2048']);
+        $this->validate([
+            "tempFotos.{$index}.*" => 'image|max:2048'
+        ], [
+            "tempFotos.{$index}.*.max" => 'Ukuran gambar tidak boleh melebihi 2MB.',
+            "tempFotos.{$index}.*.image" => 'Berkas harus berupa gambar (PNG, JPG, JPEG).'
+        ]);
 
         foreach ($this->tempFotos[$index] as $file) {
             $this->dokumentasiItems[$index]['foto_paths'][] = $file->store('berita_acara_dokumentasi', 'public');
         }
+        
         $this->tempFotos[$index] = []; 
     }
 
     public function removeFoto(int $itemIndex, int $fotoIndex): void
     {
-        unset($this->dokumentasiItems[$itemIndex]['foto_paths'][$fotoIndex]);
-        $this->dokumentasiItems[$itemIndex]['foto_paths'] = array_values($this->dokumentasiItems[$itemIndex]['foto_paths']);
+        if (isset($this->dokumentasiItems[$itemIndex]['foto_paths'][$fotoIndex])) {
+            unset($this->dokumentasiItems[$itemIndex]['foto_paths'][$fotoIndex]);
+            
+            $this->dokumentasiItems[$itemIndex]['foto_paths'] = array_values($this->dokumentasiItems[$itemIndex]['foto_paths']);
+        }
     }
 
-    public function ajukanPengembalian(PeminjamanService $service)
-    {
-        if (auth()->id() !== $this->peminjaman->pengguna_id) abort(403);
-
-        $this->validate([
-            'dokumentasiItems.*.keterangan' => 'required|string|max:255',
-            'dokumentasiItems.*.foto_paths' => 'required|array|min:1',
-        ], [
-            'dokumentasiItems.*.foto_paths.required' => 'Wajib melampirkan dokumentasi pengembalian.'
-        ]);
-
-        $service->ajukanPengembalian($this->peminjaman, $this->dokumentasiItems);
-
-        session()->flash('success', 'Pengajuan pengembalian berhasil dikirim ke Supervisor.');
-        return redirect()->route('peminjaman.index');
-    }
-
+    /**
+     * Pembuatan BA Peminjaman
+     */
     public function generateBAPinjam(PeminjamanService $service)
     {
-        if (!auth()->user()->isAdmin()) abort(403);
-
         $this->validate([
             'dokumentasiItems.*.keterangan' => 'required|string|max:255',
             'dokumentasiItems.*.foto_paths' => 'required|array|min:1',
@@ -133,29 +86,21 @@ class Show extends Component
             'dokumentasiItems.*.foto_paths.required' => 'Wajib melampirkan dokumentasi serah terima.'
         ]);
 
-        $service->generateBA($this->peminjaman, $this->dokumentasiItems, BeritaAcara::BA_PEMINJAMAN);
+        $service->generateBAPinjam($this->peminjaman, $this->dokumentasiItems);
 
         session()->flash('success', 'Berita Acara Peminjaman berhasil diterbitkan.');
+        return $this->redirect(route('peminjaman.show', $this->peminjaman->id), navigate: true);
     }
 
-    public function generateBAKembali(PeminjamanService $service)
+    /**
+     * Menangani penyelesaian pengembalian alat langsung (Otomatis buat BA Kembali)
+     */
+    public function selesaikanPeminjaman(PeminjamanService $service)
     {
-        if (!auth()->user()->isAdmin()) abort(403);
-        
-        $service->generateBA($this->peminjaman, [], BeritaAcara::BA_PENGEMBALIAN);
+        $service->selesaikanDanKembalikan($this->peminjaman);
 
-        session()->flash('success', 'Berita Acara Pengembalian berhasil diterbitkan.');
-    }
-
-    public function regenerateBA(int $baId, PeminjamanService $service)
-    {
-        if (!auth()->user()->isAdmin()) abort(403);
-
-        $ba = BeritaAcara::findOrFail($baId);
-        $service->removeBA($ba);
-
-        session()->flash('success', 'Berita Acara berhasil dihapus. Silakan lakukan validasi ulang data.');
-        return redirect()->route('peminjaman.show', $this->peminjaman->id);
+        session()->flash('success', 'Peminjaman telah selesai dikembalikan dan BA Pengembalian berhasil diterbitkan.');
+        return $this->redirect(route('peminjaman.show', $this->peminjaman->id), navigate: true);
     }
 
     public function render()

@@ -13,7 +13,7 @@
                     <i class="ti ti-search text-base"></i>
                 </span>
                 <input type="text" wire:model.live.debounce.300ms="search" 
-                       class="form-input rounded-xl border-slate-200 pl-9 text-sm py-2" placeholder="Cari Tabel / Operator / ID...">
+                       class="form-input rounded-xl border-slate-200 pl-9 text-sm py-2" placeholder="Cari log">
             </div>
 
             <div class="sm:w-48">

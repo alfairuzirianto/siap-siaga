@@ -29,7 +29,7 @@ class BeritaAcaraController extends Controller
 
     public function verify(string $token)
     {
-        $ba = BeritaAcara::with(['peminjaman.pengguna', 'peminjaman.details.peralatan.jenis'])
+        $ba = BeritaAcara::with(['peminjaman', 'peminjaman.details.peralatan.jenis'])
             ->where('token', $token)
             ->first();
 

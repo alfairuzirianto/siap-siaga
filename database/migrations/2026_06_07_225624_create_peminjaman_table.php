@@ -14,18 +14,14 @@ return new class extends Migration
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_peminjaman')->unique();
-            $table->foreignId('pengguna_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('nama_pengguna');
+            $table->string('nip');
+            $table->string('unit');
+            $table->string('jabatan');
             $table->string('tujuan_keperluan');
-            $table->date('tgl_rencana_pinjam');
-            $table->date('tgl_rencana_kembali');
+            $table->date('tgl_pinjam');
+            $table->date('tgl_kembali');
             $table->string('status');
-            $table->date('tgl_realisasi_kembali')->nullable();
-            $table->foreignId('approver_pinjam')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('keterangan_pinjam')->nullable();
-            $table->timestamp('peminjaman_approved_at')->nullable();
-            $table->foreignId('approver_kembali')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('keterangan_kembali')->nullable();
-            $table->timestamp('pengembalian_approved_at')->nullable();
             $table->timestamps();
         });
 

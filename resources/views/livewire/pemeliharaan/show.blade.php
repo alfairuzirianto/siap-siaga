@@ -5,13 +5,11 @@
             ['label' => 'Maintenance', 'url' => route('pemeliharaan.index')],
             ['label' => $pemeliharaan->nomor_pemeliharaan]]
         ">
-        @can('update', $pemeliharaan)
         <a href="{{ route('pemeliharaan.edit', $pemeliharaan) }}" wire:navigate 
            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 shadow-sm rounded-xl transition-all active:scale-[0.98]">
             <i class="ti ti-edit text-base"></i>
             <span>Edit</span>
         </a>
-        @endcan
     </x-page-header>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
@@ -68,7 +66,7 @@
                     <div class="min-w-0">
                         <span class="text-[10px] text-slate-400 block uppercase tracking-wider font-semibold">Terakhir Diubah</span>
                         <span class="text-xs font-bold text-slate-700 truncate block">{{ $pemeliharaan->updater?->nama_lengkap ?? '—' }}</span>
-                        <span class="text-[10px] text-slate-400 block">{{ ($pemeliharaan->updated_at != $pemeliharaan->created_at) ? formatTanggal($peralatan->updated_at, 'd M Y, H:i') . " WIB" : '—' }}</span>
+                        <span class="text-[10px] text-slate-400 block">{{ ($pemeliharaan->updated_at != $pemeliharaan->created_at) ? formatTanggal($pemeliharaan->updated_at, 'd M Y, H:i') . " WIB" : '—' }}</span>
                     </div>
                 </div>
             </div>

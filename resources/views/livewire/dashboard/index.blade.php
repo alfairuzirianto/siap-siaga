@@ -5,15 +5,7 @@
 
     <div class="space-y-6">
         {{-- Stat Card --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4
-            {{ auth()->user()->isSupervisor() ? 'lg:grid-cols-2' : 'lg:grid-cols-3' }}">
-            @if(auth()->user()->isSupervisor())
-            <x-stat-card
-                label="Menunggu Validasi"
-                :value="$data['validasiPending']"
-                icon="ti-shield-check"
-                color="red"/>    
-            @else
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-3">
             <x-stat-card
                 label="Total Peralatan"
                 :value="$data['totalPeralatan']"
@@ -24,7 +16,6 @@
                 :value="$data['totalPemeliharaan']"
                 icon="ti-tool"
                 color="orange"/>
-            @endif
             <x-stat-card
                 label="Peminjaman Aktif"
                 :value="$data['peminjamanAktif']"
@@ -33,25 +24,23 @@
         </div>
 
         {{-- Quick Actions --}}
-        @if(auth()->user()->isAdmin())
-            <div class="card p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
-                <h3 class="text-sm font-semibold text-slate-800 mb-4 font-display">Aksi Cepat</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <a href="{{ route('peminjaman.index') }}" wire:navigate class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs">
-                        <i class="ti ti-file-description"></i> Kelola Peminjaman
-                    </a>
-                    <a href="{{ route('peralatan.create') }}" wire:navigate class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors">
-                        <i class="ti ti-box"></i> Tambah Peralatan
-                    </a>
-                    <a href="{{ route('pemeliharaan.create') }}" wire:navigate class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors">
-                        <i class="ti ti-tool"></i> Catat Pemeliharaan
-                    </a>
-                </div>
+        <div class="card p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
+            <h3 class="text-sm font-semibold text-slate-800 mb-4 font-display">Aksi Cepat</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <a href="{{ route('peminjaman.index') }}" wire:navigate class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs">
+                    <i class="ti ti-file-description"></i> Kelola Peminjaman
+                </a>
+                <a href="{{ route('peralatan.create') }}" wire:navigate class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors">
+                    <i class="ti ti-box"></i> Tambah Peralatan
+                </a>
+                <a href="{{ route('pemeliharaan.create') }}" wire:navigate class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors">
+                    <i class="ti ti-tool"></i> Catat Pemeliharaan
+                </a>
             </div>
-        @endif
+        </div>
 
         {{-- Log Aktivitas --}}
-        @if(auth()->user()->isAdmin() && !empty($data['recentLogs']))
+        @if(!empty($data['recentLogs']))
         <div class="card p-0 overflow-hidden">
             <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
                 <div class="flex items-center gap-3">
@@ -61,11 +50,11 @@
                     <h3 class="text-sm font-semibold text-slate-800">Aktivitas Terakhir</h3>
                 </div>
                 <a href="" wire:navigate
-                   class="text-xs text-primary-600 hover:underline font-medium flex items-center gap-1">
+                class="text-xs text-primary-600 hover:underline font-medium flex items-center gap-1">
                     Lihat Semua <i class="ti ti-arrow-right text-xs"></i>
                 </a>
             </div>
- 
+
             <div class="divide-y divide-slate-100">
                 @foreach($data['recentLogs'] as $log)
                 <div class="flex items-center gap-3 px-5 py-3">
@@ -100,45 +89,6 @@
                 @endforeach
             </div>
         </div>
-        @endif
-
-        {{-- Riwayat Pengajuan --}}
-        @if(auth()->user()->isSupervisor())
-            <div class="card bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-                    <div class="flex items-center gap-2 font-bold text-slate-800 text-sm">
-                        <i class="ti ti-playlist-x text-red-500 text-lg"></i>
-                        <span>Riwayat Pengajuan</span>
-                    </div>
-                </div>
-
-                @if($data['antreanValidasi']->isEmpty())
-                    <div class="p-8 text-center text-xs text-slate-400">
-                        <i class="ti ti-circle-check text-2xl block mb-1 text-slate-300"></i>
-                        Belum ada pengajuan yang perlu diproses untuk saat ini.
-                    </div>
-                @else
-                    <div class="divide-y divide-slate-100 text-sm">
-                        @foreach($data['antreanValidasi'] as $row)
-                            <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors">
-                                <div class="space-y-0.5">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-bold text-slate-800">{{ $row->nomor_peminjaman }}</span>
-                                        <x-badge-status :status="$row->status" type="pengajuan" />
-                                    </div>
-                                    <p class="text-xs text-slate-500">Diajukan oleh <span class="font-medium">{{ $row->pengguna?->nama_lengkap }} · {{ $row->pengguna?->unit ?? '—' }}</span></p>
-                                </div>
-                                <div class="shrink-0 flex items-center">
-                                    <a href="{{ route('peminjaman.show', $row) }}" wire:navigate 
-                                       class="w-full sm:w-auto text-center px-4 py-1.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors">
-                                        Periksa
-                                    </a>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
         @endif
     </div>
 </div>

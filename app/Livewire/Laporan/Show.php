@@ -24,16 +24,12 @@ class Show extends Component
 
     public function render()
     {
-        if (!auth()->user()->isSupervisor()) abort(403);
-
         $records = match ($this->jenis) {
             'peralatan' => Peralatan::with(['jenis', 'creator'])->latest()->paginate(15),
             'pemeliharaan' => Pemeliharaan::with(['peralatan.jenis', 'creator'])->latest()->paginate(15),
-            'peminjaman' => Peminjaman::with(['pengguna', 'approverPinjam', 'approverKembali'])->latest()->paginate(15),
+            'peminjaman' => Peminjaman::latest()->paginate(15),
         };
 
-        return view('livewire.laporan.show', [
-            'records' => $records
-        ]);
+        return view('livewire.laporan.show', compact('records'));
     }
 }

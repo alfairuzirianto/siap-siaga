@@ -3,43 +3,11 @@
         title="Maintenance Peralatan" 
         subtitle="Pantau riwayat pemeliharaan"
         :breadcrumbs="[['label' => 'Maintenance']]">
-        @can('create', App\Models\Pemeliharaan::class)
         <a href="{{ route('pemeliharaan.create') }}" wire:navigate class="btn-primary flex items-center gap-2 py-2 px-4 rounded-xl shadow-sm text-sm font-medium">
             <i class="ti ti-plus text-base"></i>
             <span>Catat Pemeliharaan</span>
         </a>
-        @endcan
     </x-page-header>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="card p-5 flex items-center gap-4 bg-white rounded-2xl border border-slate-200">
-            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 ring-1 ring-amber-100 flex items-center justify-center shrink-0">
-                <i class="ti ti-report-money text-2xl"></i>
-            </div>
-            <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Biaya Pemeliharaan</p>
-                <p class="text-xl font-bold text-slate-800 font-display mt-0.5">Rp {{ number_format($totalBiaya, 0, ',', '.') }}</p>
-            </div>
-        </div>
-        <div class="card p-5 flex items-center gap-4 bg-white rounded-2xl border border-slate-200">
-            <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-600 ring-1 ring-cyan-100 flex items-center justify-center shrink-0">
-                <i class="ti ti-shield-check text-2xl"></i>
-            </div>
-            <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tindakan Preventif</p>
-                <p class="text-xl font-bold text-slate-800 font-display mt-0.5">{{ $countPreventif }} Kali</p>
-            </div>
-        </div>
-        <div class="card p-5 flex items-center gap-4 bg-white rounded-2xl border border-slate-200">
-            <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 ring-1 ring-rose-100 flex items-center justify-center shrink-0">
-                <i class="ti ti-tool text-2xl"></i>
-            </div>
-            <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tindakan Korektif</p>
-                <p class="text-xl font-bold text-slate-800 font-display mt-0.5">{{ $countKorektif }} Kali</p>
-            </div>
-        </div>
-    </div>
 
     <div class="card bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="p-4 bg-slate-50/60 border-b border-slate-100 flex flex-col sm:flex-row items-center gap-3 justify-between">
@@ -48,7 +16,7 @@
                     <i class="ti ti-search text-base"></i>
                 </span>
                 <input type="text" wire:model.live.debounce.300ms="search" 
-                       class="form-input rounded-xl border-slate-200 pl-9 text-sm py-2" placeholder="Cari No. Maintenance, No. Alat, Nama Petugas">
+                       class="form-input rounded-xl border-slate-200 pl-9 text-sm py-2" placeholder="Cari maintenance">
             </div>
 
             <div class="sm:w-48">
@@ -70,7 +38,7 @@
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
                         <tr class="border-b border-slate-200 text-xs font-bold uppercase text-slate-400 bg-slate-50/30 tracking-wider">
-                            <th class="py-3.5 px-6">No. Maintenance</th>
+                            <th class="py-3.5 px-6">Nomor</th>
                             <th class="py-3.5 px-4">Peralatan</th>
                             <th class="py-3.5 px-4">Petugas</th>
                             <th class="py-3.5 px-4">Jenis</th>
@@ -98,17 +66,12 @@
                                 <td class="py-3.5 px-4 text-right text-slate-800 whitespace-nowrap">Rp {{ number_format($pemeliharaan->biaya, 0, ',', '.') }}</td>
                                 <td class="py-3.5 px-6 whitespace-nowrap text-center">
                                     <div class="flex items-center justify-center gap-1">
-                                        @can('view', $pemeliharaan)
                                         <a href="{{ route('pemeliharaan.show', $pemeliharaan) }}" wire:navigate class="btn-ghost p-1.5 rounded-lg outline-none focus:outline-none focus-visible:outline-none">
                                             <i class="ti ti-eye text-base"></i>
                                         </a>
-                                        @endcan
-                                        @can('update', $pemeliharaan)
                                         <a href="{{ route('pemeliharaan.edit', $pemeliharaan) }}" wire:navigate class="btn-ghost p-1.5 rounded-lg outline-none focus:outline-none focus-visible:outline-none">
                                             <i class="ti ti-edit text-base"></i>
                                         </a>
-                                        @endcan
-                                        @can('delete', $pemeliharaan)
                                         <button class="btn-ghost p-1.5 text-red-500 rounded-lg outline-none focus:outline-none focus-visible:outline-none"
                                                 x-on:click="Swal.fire({
                                                     title: 'Hapus Log?', text: 'Data pemeliharaan ini akan dihapus permanen.', icon: 'warning',
@@ -117,7 +80,6 @@
                                                 }).then((result) => { if (result.isConfirmed) { $wire.delete({{ $pemeliharaan->id }}) } });">
                                             <i class="ti ti-trash text-base"></i>
                                         </button>
-                                        @endcan
                                     </div>
                                 </td>
                             </tr>

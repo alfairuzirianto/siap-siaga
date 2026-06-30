@@ -65,10 +65,10 @@
     <div class="pihak-container">
         <div class="pihak-title">1.</div>
         <table class="pihak-table">
-            <tr><td class="label">Nama</td><td class="sep">:</td><td>{{ strtoupper($supervisor?->nama_lengkap ?? '—') }}</td></tr>
-            <tr><td class="label">NIP</td><td class="sep">:</td><td>{{ $supervisor?->nip ?? '—' }}</td></tr>
-            <tr><td class="label">Jabatan</td><td class="sep">:</td><td>{{ $supervisor?->jabatan ?? '—' }}</td></tr>
-            <tr><td class="label">Unit</td><td class="sep">:</td><td>{{ strtoupper($supervisor?->unit ?? '—') }}</td></tr>
+            <tr><td class="label">Nama</td><td class="sep">:</td><td>{{ strtoupper('Reza Syahputra') }}</td></tr>
+            <tr><td class="label">NIP</td><td class="sep">:</td><td>92141015ZY</td></tr>
+            <tr><td class="label">Jabatan</td><td class="sep">:</td><td>Ph. Asman Jaringan dan Konstruksi</td></tr>
+            <tr><td class="label">Unit</td><td class="sep">:</td><td>{{ strtoupper('UP3 Palembang') }}</td></tr>
         </table>
         <div class="pihak-sebutan">Selanjutnya disebut <strong>Pihak Pertama</strong></div>
     </div>
@@ -76,10 +76,10 @@
     <div class="pihak-container">
         <div class="pihak-title">2.</div>
         <table class="pihak-table">
-            <tr><td class="label">Nama</td><td class="sep">:</td><td>{{ strtoupper($peminjaman->pengguna?->nama_lengkap ?? '—') }}</td></tr>
-            <tr><td class="label">NIP</td><td class="sep">:</td><td>{{ $peminjaman->pengguna?->nip ?? '—' }}</td></tr>
-            <tr><td class="label">Jabatan</td><td class="sep">:</td><td>{{ $peminjaman->pengguna?->jabatan ?? '—' }}</td></tr>
-            <tr><td class="label">Unit</td><td class="sep">:</td><td>{{ strtoupper($peminjaman->pengguna?->unit ?? '—') }}</td></tr>
+            <tr><td class="label">Nama</td><td class="sep">:</td><td>{{ strtoupper($peminjaman->nama_pengguna ?? '—') }}</td></tr>
+            <tr><td class="label">NIP</td><td class="sep">:</td><td>{{ $peminjaman->nip ?? '—' }}</td></tr>
+            <tr><td class="label">Jabatan</td><td class="sep">:</td><td>{{ $peminjaman->jabatan ?? '—' }}</td></tr>
+            <tr><td class="label">Unit</td><td class="sep">:</td><td>{{ strtoupper($peminjaman->unit ?? '—') }}</td></tr>
         </table>
         <div class="pihak-sebutan">Selanjutnya disebut <strong>Pihak Kedua</strong></div>
     </div>
@@ -128,19 +128,19 @@
         <tr>
             <td>
                 <div class="ttd-label">Pihak Pertama</div>
-                <div class="ttd-jabatan">{{ $supervisor?->jabatan ?? '—' }}<br>{{ $supervisor?->unit ?? '—' }}</div>
+                <div class="ttd-jabatan">Ph. Asman Jaringan dan Konstruksi<br>{{ strtoupper($peminjaman->unit ?? '—') }}</div>
                 <div class="ttd-qr-box">
                     <img src="data:image/svg+xml;base64,{{ base64_encode(\QrCode::format('svg')->size(80)->margin(0)->generate($verifyUrl)) }}">
                 </div>
-                <div class="ttd-nama">{{ $supervisor?->nama_lengkap ?? '—' }}</div>
+                <div class="ttd-nama">{{ strtoupper('Reza Syahputra') }}</div>
             </td>
             <td>
                 <div class="ttd-label">Pihak Kedua</div>
-                <div class="ttd-jabatan">{{ $peminjaman->pengguna?->jabatan ?? '—' }}<br>{{ $peminjaman->pengguna?->unit ?? '—' }}</div>
+                <div class="ttd-jabatan">{{ $peminjaman->jabatan ?? '—' }}<br>{{ $peminjaman->unit ?? '—' }}</div>
                 <div class="ttd-qr-box">
                     <img src="data:image/svg+xml;base64,{{ base64_encode(\QrCode::format('svg')->size(80)->margin(0)->generate($verifyUrl)) }}">
                 </div>
-                <div class="ttd-nama">{{ $peminjaman->pengguna?->nama_lengkap ?? '—' }}</div>
+                <div class="ttd-nama">{{ $peminjaman->nama_pengguna ?? '—' }}</div>
             </td>
         </tr>
     </table>

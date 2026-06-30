@@ -44,19 +44,13 @@ class Form extends Component
             'nama_petugas'         => 'required|string|max:255',
             'jenis_pemeliharaan'   => 'required|in:' . implode(',', Pemeliharaan::JENIS_PEMELIHARAAN),
             'tanggal_pemeliharaan' => 'required|date',
-            'biaya'                => 'required|numeric|min:0',
-            'deskripsi'            => 'nullable|string',
+            'biaya'                => 'nullable|numeric|min:0',
+            'deskripsi'            => 'required|string',
         ];
     }
 
     public function save()
     {
-        if ($this->pemeliharaan && $this->pemeliharaan->exists) {
-            $this->authorize('update', $this->pemeliharaan);
-        } else {
-            $this->authorize('create', Pemeliharaan::class);
-        }
-
         $validated = $this->validate();
 
         if (!$this->pemeliharaan || !$this->pemeliharaan->exists) {
@@ -69,7 +63,7 @@ class Form extends Component
             session()->flash('success', 'Catatan maintenance berhasil diperbarui.');
         }
 
-        return redirect()->route('pemeliharaan.index');
+        return $this->redirect(route('pemeliharaan.index'), navigate: true);
     }
 
     public function render()

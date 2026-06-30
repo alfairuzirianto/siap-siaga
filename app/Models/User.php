@@ -24,7 +24,6 @@ class User extends Authenticatable
         'jabatan',
         'unit',
         'username',
-        'role',
         'is_active',
         'email',
         'password',
@@ -54,40 +53,6 @@ class User extends Authenticatable
         ];
     }
 
-    public const ROLE_ADMIN = 'Admin';
-    public const ROLE_PENGGUNA = 'Pengguna';
-    public const ROLE_SUPERVISOR = 'Supervisor';
-
-    public const ROLES = [
-        self::ROLE_ADMIN,
-        self::ROLE_PENGGUNA,
-        self::ROLE_SUPERVISOR,
-    ];
-
-    public function hasRole(string ...$roles): bool
-    {
-        if (! $this->role) {
-            return false;
-        }
-
-        return in_array($this->role, $roles, strict: true);
-    }
-
-    public function isAdmin(): bool
-    {
-        return $this->hasRole(self::ROLE_ADMIN);
-    }
-
-    public function isPengguna(): bool
-    {
-        return $this->hasRole(self::ROLE_PENGGUNA);
-    }
-
-    public function isSupervisor(): bool
-    {
-        return $this->hasRole(self::ROLE_SUPERVISOR);
-    }
-
     public function createdPeralatan()
     {
         return $this->hasMany(Peralatan::class, 'created_by');
@@ -96,21 +61,6 @@ class User extends Authenticatable
     public function updatedPeralatan()
     {
         return $this->hasMany(Peralatan::class, 'updated_by');
-    }
-
-    public function pinjam()
-    {
-        return $this->hasMany(Peminjaman::class, 'pengguna_id');
-    }
-
-    public function validasiPinjam()
-    {
-        return $this->hasMany(Peminjaman::class, 'approver_pinjam');
-    }
-
-    public function validasiKembali()
-    {
-        return $this->hasMany(Peminjaman::class, 'approver_kembali');
     }
 
     public function createdPemeliharaan()

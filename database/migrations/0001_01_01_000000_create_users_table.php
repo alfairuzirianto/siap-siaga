@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('jabatan')->nullable();
             $table->string('unit')->nullable();
             $table->string('username')->unique();
-            $table->string('role');
             $table->boolean('is_active')->default(true);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

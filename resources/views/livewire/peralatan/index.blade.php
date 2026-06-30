@@ -11,16 +11,14 @@
              AKSI
              ============================== --}}
         @if(!$selectedJenisId)
-            @can('create', App\Models\Peralatan::class)
-                <button wire:click="createJenis" class="btn btn-secondary flex items-center gap-2 text-xs sm:text-sm py-2 px-3 rounded-xl transition-all">
-                    <i class="ti ti-plus"></i>
-                    <span>Jenis</span>
-                </button>
-                <a href="{{ route('peralatan.create') }}" wire:navigate class="btn-primary flex items-center gap-2 text-xs sm:text-sm py-2 px-3 rounded-xl">
-                    <i class="ti ti-plus"></i>
-                    <span>Peralatan</span>
-                </a>
-            @endcan
+            <button wire:click="createJenis" class="btn btn-secondary flex items-center gap-2 text-xs sm:text-sm py-2 px-3 rounded-xl transition-all">
+                <i class="ti ti-plus"></i>
+                <span>Jenis</span>
+            </button>
+            <a href="{{ route('peralatan.create') }}" wire:navigate class="btn-primary flex items-center gap-2 text-xs sm:text-sm py-2 px-3 rounded-xl">
+                <i class="ti ti-plus"></i>
+                <span>Peralatan</span>
+            </a>
         @else
             <button wire:click="resetJenis" class="btn btn-ghost flex items-center gap-2 rounded-xl text-xs sm:text-sm">
                 <i class="ti ti-arrow-left"></i>
@@ -42,8 +40,7 @@
                 <x-empty-state
                     icon="ti-box"
                     title="Belum ada peralatan"
-                    message="Data kategori dan peralatan siaga belum tersedia."
-                    :action="auth()->user()->can('create', App\Models\Peralatan::class) ? ['href' => route('peralatan.create'), 'label' => 'Tambah Peralatan'] : null" />
+                    message="Data kategori dan peralatan siaga belum tersedia."/>
             @else
                 <div class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 animate-fade-in">
                     @if($isCreatingJenis) {{-- Form menambah jenis peralatan --}}
@@ -109,13 +106,11 @@
                                                 class="font-semibold text-slate-800 text-md leading-snug line-clamp-2 group-hover:text-primary-600 transition-colors cursor-pointer flex-1">
                                                 {{ $jenis->nama_jenis }}
                                             </h3>
-                                            @if(auth()->user()->isAdmin())
                                             <button wire:click.stop="editJenis({{ $jenis->id }}, '{{ $jenis->nama_jenis }}')" 
                                                     class="text-slate-500 hover:text-primary-600 p-0.5 rounded transition-colors shrink-0"
                                                     title="Edit Nama">
                                                 <i class="ti ti-edit text-xs sm:text-sm"></i>
                                             </button>
-                                            @endif
                                         </div>
                                     @endif
                                     <div wire:click="selectJenis({{ $jenis->id }}, '{{ $jenis->nama_jenis }}')"
@@ -129,7 +124,7 @@
                                             <p class="text-xs sm:text-sm font-bold text-green-600 mt-0.5">{{ $jenis->total_tersedia }}</p>
                                         </div>
                                         <div>
-                                            <p class="text-[9px] sm:text-[10px] font-medium text-orange-600 uppercase tracking-wider">Used</p>
+                                            <p class="text-[9px] sm:text-[10px] font-medium text-orange-600 uppercase tracking-wider">Dipinjam</p>
                                             <p class="text-xs sm:text-sm font-bold text-orange-600 mt-0.5">{{ $jenis->total_dipinjam }}</p>
                                         </div>
                                     </div>
@@ -201,17 +196,12 @@
                                 </a>
                                 <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t border-dashed border-slate-100 sm:border-0">
                                     <div class="flex items-center gap-1 bg-slate-100 sm:bg-transparent rounded-lg p-0.5 sm:p-0">
-                                        @can('view', $peralatan)
                                         <a href="{{ route('peralatan.show', $peralatan) }}" wire:navigate class="btn-ghost p-2 sm:p-1.5 text-slate-600 rounded-md">
                                             <i class="ti ti-eye text-base"></i>
                                         </a>
-                                        @endcan
-                                        @can('update', $peralatan)
                                         <a href="{{ route('peralatan.edit', $peralatan) }}" wire:navigate class="btn-ghost p-2 sm:p-1.5 text-slate-600 rounded-md">
                                             <i class="ti ti-edit text-base"></i>
                                         </a>
-                                        @endcan
-                                        @can('delete', $peralatan)
                                         <button class="btn-ghost p-2 sm:p-1.5 text-red-500 hover:bg-red-50 rounded-md"
                                             x-on:click="
                                                 Swal.fire({
@@ -231,7 +221,6 @@
                                             ">
                                             <i class="ti ti-trash text-base"></i>
                                         </button>
-                                        @endcan
                                     </div>
                                 </div>
                             </div>

@@ -56,11 +56,11 @@
                 {{-- Detail Transaksi Peminjaman --}}
                 <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden mb-4 shadow-sm">
                     <div class="px-5 py-3.5 border-b border-slate-100 bg-slate-50 flex items-center gap-2 font-bold text-slate-800 text-sm">
-                        <i class="ti ti-file-description text-primary-600"></i> Data Pengajuan Sektor
+                        <i class="ti ti-file-description text-primary-600"></i> Data Peminjaman
                     </div>
                     <div class="divide-y divide-slate-100 text-sm">
-                        <div class="flex px-5 py-3"><span class="text-slate-400 w-32 shrink-0">No. Nota</span><span class="font-semibold text-primary-700">{{ $ba->peminjaman?->nomor_peminjaman }}</span></div>
-                        <div class="flex px-5 py-3"><span class="text-slate-400 w-32 shrink-0">Nama Pemohon</span><span class="text-slate-700">{{ $ba->peminjaman?->pengguna?->nama_lengkap }}</span></div>
+                        <div class="flex px-5 py-3"><span class="text-slate-400 w-32 shrink-0">No. Nota</span><span class="font-semibold">{{ $ba->peminjaman?->nomor_peminjaman }}</span></div>
+                        <div class="flex px-5 py-3"><span class="text-slate-400 w-32 shrink-0">Pengguna</span><span class="text-slate-700">{{ $ba->peminjaman?->nama_pengguna }}</span></div>
                         <div class="flex px-5 py-3"><span class="text-slate-400 w-32 shrink-0">Keperluan</span><span class="text-slate-700">{{ $ba->peminjaman?->tujuan_keperluan }}</span></div>
                     </div>
                 </div>

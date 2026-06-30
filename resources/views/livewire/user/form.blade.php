@@ -15,7 +15,7 @@
                     {{-- Nama Lengkap --}}
                     <div class="space-y-1.5">
                         <label class="form-label text-slate-700 font-medium text-sm">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" wire:model="nama_lengkap" class="form-input rounded-xl border-slate-200 focus:border-primary-500 text-sm">
+                        <input type="text" wire:model="nama_lengkap" placeholder="Nama lengkap user" class="form-input rounded-xl border-slate-200 focus:border-primary-500 text-sm">
                         @error('nama_lengkap') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -39,33 +39,13 @@
                         <input type="email" wire:model="email" class="form-input rounded-xl border-slate-200 focus:border-primary-500 text-sm" placeholder="nama@pln.co.id">
                         @error('email') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
                     </div>
-
-                    {{-- Jabatan --}}
-                    <div class="space-y-1.5">
-                        <label class="form-label text-slate-700 font-medium text-sm">Jabatan</label>
-                        <input type="text" wire:model="jabatan" class="form-input rounded-xl border-slate-200 focus:border-primary-500 text-sm" placeholder="Contoh: Supervisor Logistik">
-                        @error('jabatan') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    {{-- Role --}}
-                    <div class="space-y-1.5">
-                        <label class="form-label text-slate-700 font-medium text-sm">
-                            Role <span class="text-red-500">*</span>
-                        </label>
-                        <div class="relative">
-                            <select wire:model="role" 
-                                    class="form-input w-full rounded-xl border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 appearance-none focus:border-primary-500 focus:ring-primary-500 transition-all pr-10">
-                                <option value="">-- Pilih Role --</option>
-                                @foreach(App\Models\User::ROLES as $roleItem)
-                                    <option value="{{ $roleItem }}">{{ $roleItem }}</option>
-                                @endforeach
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400 text-sm">
-                                <i class="ti ti-chevron-down"></i>
-                            </div>
-                        </div>
-                        @error('role') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
-                    </div>
+                </div>
+                
+                {{-- Jabatan --}}
+                <div class="space-y-1.5">
+                    <label class="form-label text-slate-700 font-medium text-sm">Jabatan</label>
+                    <input type="text" wire:model="jabatan" class="form-input rounded-xl border-slate-200 focus:border-primary-500 text-sm" placeholder="Contoh: Supervisor Logistik">
+                    @error('jabatan') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 {{-- Unit Kerja --}}
@@ -75,7 +55,7 @@
                     @error('unit') <p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p> @enderror
                 </div>
 
-                {{-- Input Password dengan fitur Show/Hide Terintegrasi --}}
+                {{-- Input Password --}}
                 <div class="space-y-1.5 border-t border-slate-100 pt-4">
                     <label class="form-label text-slate-700 font-medium text-sm">Kata Sandi Akses</label>
                     <div class="relative rounded-xl shadow-sm max-w-md">

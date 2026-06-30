@@ -9,13 +9,11 @@
         {{-- ==============================
              AKSI
              ============================== --}}
-        @can('update', $peralatan)
         <a href="{{ route('peralatan.edit', $peralatan) }}" wire:navigate 
            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 shadow-sm shadow-primary-500/10 rounded-xl transition-all active:scale-[0.98]">
             <i class="ti ti-edit text-base"></i>
             <span>Edit</span>
         </a>
-        @endcan
     </x-page-header>
 
     {{-- ==============================
@@ -104,7 +102,7 @@
                         <span class="text-[11px] text-slate-400 font-medium block uppercase tracking-wider">Terakhir Diperbarui</span>
                         <span class="text-sm font-semibold text-slate-700 truncate block">{{ $peralatan->updater?->nama_lengkap ?? '—' }}</span>
                         <span class="text-[11px] text-slate-400 block mt-0.5">
-                            {{ ($peralatan->updated_at != $peralatan->created_at) ? formatTanggal($peralatan->updated_at, 'd M Y, H:i') . " WIB" : '—' }}
+                            {{ $peralatan->updated_at ? formatTanggal($peralatan->updated_at, 'd M Y, H:i') . " WIB" : '—' }}
                         </span>
                     </div>
                 </div>
@@ -190,11 +188,10 @@
                             <table class="w-full text-left border-collapse min-w-[600px]">
                                 <thead>
                                     <tr class="border-b border-slate-100 text-xs font-bold uppercase tracking-wider text-slate-400 bg-slate-50/40">
-                                        <th class="py-3 px-6">Pemohon</th>
+                                        <th class="py-3 px-6">Pengguna</th>
                                         <th class="py-3 px-4">Keperluan</th>
-                                        <th class="py-3 px-4">Rencana Durasi</th>
+                                        <th class="py-3 px-4">Tanggal</th>
                                         <th class="py-3 px-4">Status</th>
-                                        <th class="py-3 px-6">Realisasi Kembali</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-50 text-sm">
@@ -204,32 +201,22 @@
                                         <tr class="hover:bg-slate-50/50 transition-colors">
                                             <td class="py-3.5 px-6 whitespace-nowrap">
                                                 <span class="font-semibold text-slate-800 block">{{ $pinjam->nomor_peminjaman }}</span>
-                                                <span class="text-xs text-slate-500 font-medium">{{ $pinjam->pengguna?->nama_lengkap ?? '—' }}</span>
+                                                <span class="text-xs text-slate-500 font-medium">{{ $pinjam->nama_pengguna ?? '—' }}</span>
                                             </td>
                                             <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate" title="{{ $pinjam->tujuan_keperluan }}">
                                                 {{ $pinjam->tujuan_keperluan }}
                                             </td>
                                             <td class="py-3.5 px-4 text-slate-600 text-xs whitespace-nowrap">
                                                 <div class="font-medium text-slate-700">
-                                                    {{ formatTanggal($pinjam->tgl_rencana_pinjam, 'd M Y') }}
+                                                    {{ formatTanggal($pinjam->tgl_pinjam, 'd M Y') }}
                                                 </div>
                                                 <div class="text-slate-400 mt-0.5">
-                                                    s/d {{ formatTanggal($pinjam->tgl_rencana_kembali, 'd M Y') }}
+                                                    s/d {{ formatTanggal($pinjam->tgl_kembali, 'd M Y') }}
 
                                                 </div>
                                             </td>
                                             <td class="py-3.5 px-4 whitespace-nowrap">
                                                 <x-badge-status :status="$pinjam->status" type="pengajuan" />
-                                            </td>
-                                            <td class="py-3.5 px-6 whitespace-nowrap font-medium text-slate-600">
-                                                @if($pinjam->tgl_realisasi_kembali)
-                                                    <span class="text-green-600 flex items-center gap-1">
-                                                        <i class="ti ti-calendar-check text-base"></i>
-                                                            {{ formatTanggal($pinjam->tgl_realisasi_kembali, 'd M Y') }}
-                                                    </span>
-                                                @else
-                                                    <span class="text-slate-400 italic text-xs">Belum dikembalikan</span>
-                                                @endif
                                             </td>
                                         </tr>
                                         @endif

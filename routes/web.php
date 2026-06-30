@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\BeritaAcaraController;
 use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\ProfileController;
 use App\Livewire\Dashboard\Index as Dashboard;
 use App\Livewire\Peralatan\Index as PeralatanIndex;
 use App\Livewire\Peralatan\Form as PeralatanForm;
@@ -17,70 +16,54 @@ use App\Livewire\ActivityLog\Show as ActivityLogShow;
 use App\Livewire\Peminjaman\Index as PeminjamanIndex;
 use App\Livewire\Peminjaman\Form as PeminjamanForm;
 use App\Livewire\Peminjaman\Show as PeminjamanShow;
-use App\Livewire\Peminjaman\Validasi as Validasi;
 use App\Livewire\Laporan\Index as LaporanIndex;
 use App\Livewire\Laporan\Show as LaporanShow;
 use Illuminate\Support\Facades\Route;
 
 
 Route::middleware(['auth'])->group(function () {    
-    Route::get('/', function () {
-        if (auth()->user()->isAdmin()) return redirect()->route('dashboard');
-        if (auth()->user()->isSupervisor()) return redirect()->route('dashboard');
-        if (auth()->user()->isPengguna()) return redirect()->route('peminjaman.index');
+    Route::get('/', fn () => redirect()->route('dashboard'));
+
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
+
+    Route::prefix('peralatan')->name('peralatan.')->group(function () {
+        Route::get('/', PeralatanIndex::class)->name('index');
+        Route::get('create', PeralatanForm::class)->name('create');
+        Route::get('{peralatan}/edit', PeralatanForm::class)->name('edit');
+        Route::get('{peralatan}', PeralatanShow::class)->name('show');
     });
 
-    Route::get('dashboard', Dashboard::class)
-        ->middleware(['role:Admin,Supervisor'])->name('dashboard');
+    Route::prefix('pemeliharaan')->name('pemeliharaan.')->group(function () {
+        Route::get('/', PemeliharaanIndex::class)->name('index');
+        Route::get('create', PemeliharaanForm::class)->name('create');
+        Route::get('{pemeliharaan}/edit', PemeliharaanForm::class)->name('edit');
+        Route::get('{pemeliharaan}', PemeliharaanShow::class)->name('show');
+    });
 
-    Route::middleware(['role:Admin'])->group(function () {
-        Route::prefix('peralatan')->name('peralatan.')->group(function () {
-            Route::get('/', PeralatanIndex::class)->name('index');
-            Route::get('create', PeralatanForm::class)->name('create');
-            Route::get('{peralatan}/edit', PeralatanForm::class)->name('edit');
-            Route::get('{peralatan}', PeralatanShow::class)->name('show');
-        });
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', UserIndex::class)->name('index');
+        Route::get('create', UserForm::class)->name('create');
+        Route::get('{user}/edit', UserForm::class)->name('edit');
+    });
 
-        Route::prefix('pemeliharaan')->name('pemeliharaan.')->group(function () {
-            Route::get('/', PemeliharaanIndex::class)->name('index');
-            Route::get('create', PemeliharaanForm::class)->name('create');
-            Route::get('{pemeliharaan}/edit', PemeliharaanForm::class)->name('edit');
-            Route::get('{pemeliharaan}', PemeliharaanShow::class)->name('show');
-        });
-
-        Route::prefix('users')->name('users.')->group(function () {
-            Route::get('/', UserIndex::class)->name('index');
-            Route::get('create', UserForm::class)->name('create');
-            Route::get('{user}/edit', UserForm::class)->name('edit');
-        });
-
-        Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
-            Route::get('/', ActivityLogIndex::class)->name('index');
-            Route::get('{activityLog}', ActivityLogShow::class)->name('show');
-        });
+    Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
+        Route::get('/', ActivityLogIndex::class)->name('index');
+        Route::get('{activityLog}', ActivityLogShow::class)->name('show');
     });
 
     Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
-        Route::get('/', PeminjamanIndex::class)->middleware(['role:Admin,Pengguna'])->name('index');
-        Route::get('create', PeminjamanForm::class)->middleware(['role:Pengguna'])->name('create');
-        Route::get('{peminjaman}', PeminjamanShow::class)->middleware(['can:view,peminjaman'])->name('show');
-    });
-    
-    Route::middleware(['role:Supervisor'])->group(function () {
-        Route::name('validasi.')->group(function () {
-            Route::get('validasi-peminjaman', Validasi::class)->name('peminjaman');
-            Route::get('validasi-pengembalian', Validasi::class)->name('pengembalian');
-        });
-
-        Route::prefix('laporan')->name('laporan.')->group(function () {
-            Route::get('/', LaporanIndex::class)->name('index');
-            Route::get('{jenis}', LaporanShow::class)->name('show');
-            Route::get('{jenis}/download', [LaporanController::class, 'download'])->name('download');
-        });
+        Route::get('/', PeminjamanIndex::class)->name('index');
+        Route::get('create', PeminjamanForm::class)->name('create');
+        Route::get('{peminjaman}', PeminjamanShow::class)->name('show');
     });
 
-    Route::get('/berita-acara/{ba}/download', [BeritaAcaraController::class, 'download'])
-        ->middleware(['role:Admin,Supervisor'])->name('ba.download');
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('/', LaporanIndex::class)->name('index');
+        Route::get('{jenis}', LaporanShow::class)->name('show');
+        Route::get('{jenis}/download', [LaporanController::class, 'download'])->name('download');
+    });
+
+    Route::get('/berita-acara/{ba}/download', [BeritaAcaraController::class, 'download'])->name('ba.download');
 });
 
 Route::get('verify/{token}', [BeritaAcaraController::class, 'verify'])->name('ba.verify');

@@ -10,16 +10,12 @@ class ActivityLog extends Model
     public const AKSI_UPDATE = 'Update';
     public const AKSI_DELETE = 'Delete';
     public const AKSI_GENERATE = 'Generate BA';
-    public const AKSI_APPROVE = 'Menyetujui';
-    public const AKSI_REJECT = 'Menolak';
 
     public const AKSI_USER = [
         self::AKSI_CREATE,
         self::AKSI_UPDATE,
         self::AKSI_DELETE,
         self::AKSI_GENERATE,
-        self::AKSI_APPROVE,
-        self::AKSI_REJECT,
     ];
 
     protected $fillable = [

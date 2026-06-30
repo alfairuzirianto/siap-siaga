@@ -12,13 +12,12 @@ class LaporanController extends Controller
 {
     public function download(string $jenis)
     {
-        if (!auth()->user()->isSupervisor()) abort(403);
         if (!in_array($jenis, ['peralatan', 'pemeliharaan', 'peminjaman'])) abort(404);
 
         $records = match ($jenis) {
             'peralatan' => Peralatan::with(['jenis'])->latest()->get(),
             'pemeliharaan' => Pemeliharaan::with(['peralatan.jenis'])->latest()->get(),
-            'peminjaman' => Peminjaman::with(['pengguna'])->latest()->get(),
+            'peminjaman' => Peminjaman::latest()->get(),
         };
 
         $pdf = Pdf::loadView('pdf.laporan', [

@@ -31,9 +31,7 @@ class Index extends Component
     }
 
     public function createJenis()
-    {
-        if (!auth()->user()->isAdmin()) abort(403);
-        
+    {        
         $this->cancelJenis();
         $this->isCreatingJenis = true;
         $this->nama_jenis = '';
@@ -41,8 +39,6 @@ class Index extends Component
 
     public function editJenis(int $id, string $new_nama_jenis)
     {
-        if (!auth()->user()->isAdmin()) abort(403);
-
         $this->editingJenisId = $id;
         $this->nama_jenis = $new_nama_jenis;
     }
@@ -54,8 +50,6 @@ class Index extends Component
 
     public function saveJenis()
     {
-        if (!auth()->user()->isAdmin()) abort(403);
-
         $this->validate([
             'nama_jenis' => 'required|string|max:255|unique:peralatan_jenis,nama_jenis,' . ($this->editingJenisId ?? 'NULL'),
         ]);
@@ -76,7 +70,6 @@ class Index extends Component
 
     public function delete(Peralatan $peralatan)
     {
-        $this->authorize('delete', $peralatan);
         $peralatan->delete();
         session()->flash('success', 'Peralatan berhasil dihapus.');
     }

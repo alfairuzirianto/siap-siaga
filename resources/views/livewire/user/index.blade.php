@@ -17,16 +17,7 @@
                     <i class="ti ti-search text-base"></i>
                 </span>
                 <input type="text" wire:model.live.debounce.300ms="search" 
-                       class="form-input rounded-xl border-slate-200 pl-9 text-sm py-2" placeholder="Cari nama, nip, username, email">
-            </div>
-
-            <div class="sm:w-48">
-                <select wire:model.live="filterRole" class="form-input rounded-xl border-slate-200 text-sm py-2">
-                    <option value="">-- Semua Role --</option>
-                    @foreach(App\Models\User::ROLES as $role)
-                        <option value="{{ $role }}">{{ $role }}</option>
-                    @endforeach
-                </select>
+                       class="form-input rounded-xl border-slate-200 pl-9 text-sm py-2" placeholder="Cari user">
             </div>
         </div>
 
@@ -42,7 +33,6 @@
                             <th class="py-3.5 px-6">Nama / NIP</th>
                             <th class="py-3.5 px-4">Kredensial</th>
                             <th class="py-3.5 px-4">Unit / Jabatan</th>
-                            <th class="py-3.5 px-4">Hak Akses</th>
                             <th class="py-3.5 px-4 text-center">Status</th>
                             <th class="py-3.5 px-6 text-center">Aksi</th>
                         </tr>
@@ -61,16 +51,6 @@
                                 <td class="py-3.5 px-4">
                                     <span class="text-slate-700 text-xs block truncate max-w-[180px]" title="{{ $user->unit }}">{{ $user->unit ?: '—' }}</span>
                                     <span class="text-[11px] text-slate-400 font-normal block truncate max-w-[180px] mt-0.5">{{ $user->jabatan ?: '—' }}</span>
-                                </td>
-                                <td class="py-3.5 px-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset 
-                                        {{ match($user->role) {
-                                            'Admin' => 'bg-purple-50 text-purple-700 ring-purple-600/20',
-                                            'Supervisor' => 'bg-blue-50 text-blue-700 ring-blue-600/20',
-                                            default => 'bg-slate-50 text-slate-600 ring-slate-500/10'
-                                        } }}">
-                                        {{ $user->role }}
-                                    </span>
                                 </td>
                                 <td class="py-3.5 px-4 whitespace-nowrap text-center">
                                     <button wire:click="toggleStatus({{ $user->id }})" 
