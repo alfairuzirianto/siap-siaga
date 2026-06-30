@@ -16,12 +16,9 @@ class UserSeeder extends Seeder
     {
         User::insert([
             [
-                'nama_lengkap' => 'Reza Syahputra',
-                'nip' => '92141015ZY',
-                'jabatan' => 'Ph. Asman Jaringan dan Konstruksi',
-                'unit' => 'UP3 Palembang',
-                'username' => 'reza',
-                'email' => 'reza@test.com',
+                'nama_lengkap' => 'Admin',
+                'username' => 'admin',
+                'email' => 'admin@test.com',
                 'password' => Hash::make('12345678'),
                 'created_at' => now(),
             ],
